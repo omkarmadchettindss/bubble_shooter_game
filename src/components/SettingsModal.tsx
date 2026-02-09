@@ -59,6 +59,10 @@ export default function SettingsModal({ visible, onClose }: SettingsModalProps) 
 
   useEffect(() => {
     if (visible) {
+      // Reset animation values before starting
+      scaleAnim.setValue(0);
+      fadeAnim.setValue(0);
+      
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,

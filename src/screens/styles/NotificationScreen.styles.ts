@@ -26,6 +26,22 @@ export const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
   },
+  markAllButton: {
+    position: 'absolute',
+    top: hp(5),
+    right: wp(5),
+    padding: wp(2),
+    borderRadius: wp(2),
+    backgroundColor: 'rgba(255, 152, 0, 0.15)',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    zIndex: 100,
+    // shadowColor: COLORS.primary,
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 4,
+    // elevation: 5,
+  },
   notificationBoardContainer: {
     width: wp(90),
     height: hp(75),
@@ -73,7 +89,7 @@ export const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: RFValue(11),
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: '#a76c23ff',
     marginBottom: hp(0.3),
   },
   notificationMessage: {
