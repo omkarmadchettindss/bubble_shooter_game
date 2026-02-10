@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS } from '../../constants/colors';
+import { COLORS, SPACING, RADIUS, createBackgroundOverlay, createTextShadow } from '../../constants/theme';
 
 export const styles = StyleSheet.create({
   backgroundImage: {
@@ -13,11 +13,11 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.backgroundOverlay,
+    ...createBackgroundOverlay(),
   },
   header: {
     paddingTop: hp(5),
-    paddingHorizontal: wp(4),
+    paddingHorizontal: SPACING.xs,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     height: wp(12),
     justifyContent: 'center',
     alignItems: 'center',
-    left: wp(80)
+    left: wp(83.3)
   },
   backButtonIcon: {
     width: wp(25),
@@ -54,17 +54,15 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     left: wp(3),
     bottom: hp(0.2),
-    color: '#dca91dff',
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    color: COLORS.gold,
+    ...createTextShadow(),
     zIndex: 1,
   },
   levelMapContainer: {
     flex: 1,
   },
   levelMapContent: {
-    paddingVertical: hp(2),
+    paddingVertical: SPACING.md,
     paddingBottom: hp(10),
     minHeight: hp(180),
   },
@@ -74,7 +72,6 @@ export const styles = StyleSheet.create({
     position: 'relative',
     bottom: wp(-20),
     top: wp(-10)
-    // REMOVED: top: wp(-30) - This was hiding level 1
   },
   snakePath: {
     position: 'absolute',
@@ -88,55 +85,53 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  levelNodeTouchable: {
+    width: '100%',
+    height: '100%',
+  },
   levelNode: {
     width: wp(20),
     height: wp(20),
-    borderRadius: wp(10),
-    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
-    borderColor: COLORS.white,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
   levelNodeLocked: {
-    backgroundColor: '#666',
-    borderColor: '#888',
+    backgroundColor: COLORS.cardBackgroundLight,
+    borderRadius: wp(10),
+    top: wp(2.5),
+    width: wp(15),
+    height: wp(15),
+    borderWidth: 2,
+    borderColor: COLORS.borderLight,
     opacity: 0.7,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lockedIcon: {
+    fontSize: RFValue(12)
   },
   levelNumber: {
     fontSize: RFValue(18),
     fontWeight: 'bold',
-    color: COLORS.white,
-    textShadowColor: 'rgba(0, 0, 0, 0.5)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 3,
+    color: '#201f1fae',
   },
   starsContainer: {
     flexDirection: 'row',
-    gap: wp(1),
-    marginTop: hp(0.3),
+    gap: SPACING.xs,
+    marginTop: hp(0.5),
     position: 'absolute',
-    bottom: wp(1),
+    bottom: wp(-0.2),
   },
   specialLevelBadge: {
     position: 'absolute',
     top: -hp(1.5),
     backgroundColor: COLORS.error,
-    paddingHorizontal: wp(3),
+    paddingHorizontal: SPACING.sm,
     paddingVertical: hp(0.5),
-    borderRadius: wp(2),
-    borderWidth: 2,
+    borderRadius: RADIUS.sm,
+    borderWidth: 1,
     borderColor: COLORS.white,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 3,
-    elevation: 4,
+    right: wp(6),
   },
   specialLevelText: {
     fontSize: RFValue(8),

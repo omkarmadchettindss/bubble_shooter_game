@@ -11,7 +11,7 @@ export const IMAGE_URL = {
   INFO_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770177907/Bubble%20Shooting%20Game/l1y9mp1bfepzojdqvj3a.webp',
   COIN_CONTAINER: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770183418/Bubble%20Shooting%20Game/le7itnqhqxtk8m69pchc.webp',
   DAILY_REWARD_BOX: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770190834/Bubble%20Shooting%20Game/b4f5wrsn566jbrkmxdoc.webp',
-  PROMO_BANNER: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770186150/Bubble%20Shooting%20Game/kehy5smvsihfep3x59nq.webp',
+  PROMO_BANNER: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770708614/Bubble%20Shooting%20Game/lz1hrtl0d85kgfnamo3b.webp',
   DAILY_CHALLENGE: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770187814/Bubble%20Shooting%20Game/d8ovvxxmu2alni4aoftu.webp',
   DAILY_REWARD_TAG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770190404/Bubble%20Shooting%20Game/zruhavxztfojvkttubir.webp',
   X_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770191558/Bubble%20Shooting%20Game/vl7yxsvawaxcrcla3cuj.webp',
@@ -24,5 +24,11 @@ export const IMAGE_URL = {
   DAY6: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770613359/Bubble%20Shooting%20Game/vz2jltbbeezy36tbinhp.webp',
   DAY7: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770613375/Bubble%20Shooting%20Game/ilb2mgfx6qalj8n9elpn.webp',
   NOTIFICATION_BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770616489/Bubble%20Shooting%20Game/eyvf0kzhyralpyuwo2xy.webp',
-  PROFILE_IMG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770635088/Bubble%20Shooting%20Game/hpafet4qvqmogib2vf6b.webp'
+  PROFILE_IMG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770635088/Bubble%20Shooting%20Game/hpafet4qvqmogib2vf6b.webp',
+  LEVEL_NUM_BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770638340/Bubble%20Shooting%20Game/lt5k5qaiml8v3zq6w6sg.webp',
+  RANK3: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770699578/Bubble%20Shooting%20Game/r6ajgrhulexb4xtrpohl.webp',
+  RANK2: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770699601/Bubble%20Shooting%20Game/cfx0wajckvo5qtix2jwj.webp',
+  RANK1: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770699616/Bubble%20Shooting%20Game/qccbpvafue0yhrvb1odr.webp',
+  LEADERBOARD_FRAME_BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770710616/Bubble%20Shooting%20Game/tgxdqr3qs33td0xfyoly.webp',
+  RANK_ROW_BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770710283/Bubble%20Shooting%20Game/neuu6scgr51g6csa8a8e.webp'
 };

@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS } from '../../constants/colors';
+import { COLORS, SPACING, RADIUS, CARD_STYLES, createBackgroundOverlay } from '../../constants/theme';
 
 export const styles = StyleSheet.create({
   backgroundImage: {
@@ -13,8 +13,8 @@ export const styles = StyleSheet.create({
   },
   container: { 
     flex: 1, 
-    backgroundColor: COLORS.backgroundOverlay,
-    paddingHorizontal: wp(6),
+    ...createBackgroundOverlay(),
+    paddingHorizontal: SPACING.md + SPACING.sm,
     paddingTop: hp(8),
   },
   header: {
@@ -22,28 +22,26 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: hp(8),
     top: hp(15.5),
-    paddingHorizontal: wp(2),
+    paddingHorizontal: SPACING.sm,
     left: wp(26),
     zIndex: 999
   },
   title: { 
     fontSize: RFValue(20), 
     fontWeight: 'bold',
-    color: '#7d511cff',
-    marginLeft: wp(3),
+    color: COLORS.goldDark,
+    marginLeft: SPACING.sm,
   },
   settingsCard: {
-    backgroundColor: COLORS.cardBackground,
-    borderRadius: wp(6),
+    ...CARD_STYLES.base,
     borderWidth: 2,
     borderColor: COLORS.borderSecondary,
-    shadowColor: COLORS.shadowPrimary,
+    shadowColor: COLORS.black,
     overflow: 'hidden',
   },
   settingsCardContainer: {
     position: 'relative',
     zIndex: 10,
-    // elevation: 10,
   },
   settingsCardBackground: {
     width: '120%',
@@ -53,15 +51,14 @@ export const styles = StyleSheet.create({
     left: -45,
   },
   settingsCardContent: {
-    paddingHorizontal: wp(8),
-    paddingVertical: hp(6),
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.xl + SPACING.md,
     zIndex: 15,
-    // elevation: 15,
   },
   cardHeader: {
-    paddingHorizontal: wp(6),
-    paddingVertical: hp(2),
-    backgroundColor: COLORS.gameAccentLight,
+    paddingHorizontal: SPACING.md + SPACING.sm,
+    paddingVertical: SPACING.md,
+    backgroundColor: COLORS.cardBackgroundLight,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.borderPrimary,
   },
@@ -77,16 +74,15 @@ export const styles = StyleSheet.create({
     color: COLORS.textSecondary,
   },
   settingsList: {
-    paddingHorizontal: wp(6),
-    paddingVertical: hp(2),
+    paddingHorizontal: SPACING.md + SPACING.sm,
+    paddingVertical: SPACING.md,
   },
   settingItem: {
     top: wp(8),
-    paddingVertical: hp(1.49),
+    paddingVertical: SPACING.md - SPACING.xs,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: COLORS.borderLight,
     zIndex: 20,
-    // elevation: 20,
   },
   lastSettingItem: {
     borderBottomWidth: 0,
@@ -97,50 +93,41 @@ export const styles = StyleSheet.create({
     height: hp(4),
     zIndex: 25,
     top: 0,
-    marginLeft: wp(2),
-    marginRight: wp(4),
-    // backgroundColor: '#000000ff'
-    // elevation: 25,
+    marginLeft: SPACING.sm,
+    marginRight: SPACING.md,
   },
   settingIcon: {
     width: wp(12),
     height: wp(12),
-    borderRadius: wp(6),
-    backgroundColor: COLORS.gameOverlayLight,
+    borderRadius: RADIUS.md,
+    backgroundColor: COLORS.cardBackgroundLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: wp(4),
+    marginRight: SPACING.md,
   },
   settingText: {
     flex: 1,
-    marginRight: wp(3),
+    marginRight: SPACING.sm,
     top: wp(0),
     left: wp(11),
   },
   settingTitle: {
     fontSize: RFValue(10),
     fontWeight: '600',
-    // color: COLORS.textPrimary,
-    color: '#dc8a25ff',
-    // backgroundColor: '#000000ff'
-    // marginBottom: hp(0.5),
+    color: COLORS.goldDark,
   },
   settingDescription: {
     fontSize: RFValue(8),
     color: COLORS.textSecondary,
     lineHeight: RFValue(16),
-    // backgroundColor: '#000000ff'
   },
   settingToggle: {
     justifyContent: 'center',
     alignItems: 'center',
-    // top: wp(2)
   },
   cardFooter: {
-    paddingHorizontal: wp(6),
-    paddingVertical: hp(4),
-    // backgroundColor: COLORS.gameOverlayLight,
-    // borderTopWidth: 1,
+    paddingHorizontal: SPACING.md + SPACING.sm,
+    paddingVertical: SPACING.xl,
     borderTopColor: COLORS.borderSecondary,
   },
   footerText: {

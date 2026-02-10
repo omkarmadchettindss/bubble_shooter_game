@@ -1,52 +1,59 @@
+/**
+ * @deprecated Use theme.ts instead for the new design system
+ * This file is kept for backward compatibility during migration
+ */
+
+import { COLORS as THEME_COLORS } from './theme';
+
 export const COLORS = {
   // Primary Colors
-  primary: '#ff9800', // Orange - main theme color
-  primaryLight: 'rgba(255, 152, 0, 0.8)',
-  primaryDark: '#e68900',
+  primary: THEME_COLORS.primary,
+  primaryLight: THEME_COLORS.primaryLight,
+  primaryDark: THEME_COLORS.primaryDark,
   
-  // Secondary Colors
-  secondary: '#dc3545', // Red - for logout/destructive actions
+  // Secondary Colors (for destructive actions)
+  secondary: '#dc3545',
   secondaryLight: 'rgba(220, 53, 69, 0.2)',
   secondaryDark: '#c82333',
   
   // Background Colors
-  backgroundDark: '#0b0b0b', // Main dark background
-  backgroundOverlay: 'rgba(11, 11, 11, 0.7)', // Semi-transparent overlay
-  cardBackground: '#1a1a1a', // Card backgrounds
-  cardBackgroundLight: '#2a2a2a', // Lighter card backgrounds
+  backgroundDark: THEME_COLORS.backgroundDark,
+  backgroundOverlay: THEME_COLORS.overlayGradient,
+  cardBackground: THEME_COLORS.cardBackground,
+  cardBackgroundLight: THEME_COLORS.cardBackgroundLight,
   
   // Text Colors
-  textPrimary: '#ffffff', // Main text color
-  textSecondary: '#cccccc', // Secondary text color
-  textMuted: '#888888', // Muted text color
-  textDisabled: 'rgba(255, 255, 255, 0.7)', // Disabled text
+  textPrimary: THEME_COLORS.textPrimary,
+  textSecondary: THEME_COLORS.textSecondary,
+  textMuted: THEME_COLORS.textMuted,
+  textDisabled: THEME_COLORS.textDisabled,
   
   // Border Colors
-  borderPrimary: 'rgba(255, 152, 0, 0.3)', // Primary border with opacity
-  borderSecondary: 'rgba(255, 152, 0, 0.2)', // Lighter primary border
-  borderLight: 'rgba(255, 255, 255, 0.3)', // Light border
-  borderDark: 'rgba(0, 0, 0, 0.3)', // Dark border
+  borderPrimary: THEME_COLORS.borderPrimary,
+  borderSecondary: THEME_COLORS.borderSecondary,
+  borderLight: THEME_COLORS.borderLight,
+  borderDark: THEME_COLORS.borderDark,
   
   // Status Colors
-  success: '#28a745',
-  warning: '#ffc107',
-  error: '#dc3545',
-  info: '#17a2b8',
+  success: THEME_COLORS.success,
+  warning: THEME_COLORS.warning,
+  error: THEME_COLORS.error,
+  info: THEME_COLORS.info,
   
   // Transparent Colors
-  transparent: 'transparent',
-  black: '#000000',
-  white: '#ffffff',
+  transparent: THEME_COLORS.transparent,
+  black: THEME_COLORS.black,
+  white: THEME_COLORS.white,
   
   // Game Specific Colors
-  gameAccent: '#ff9800', // Same as primary for consistency
-  gameAccentLight: 'rgba(255, 152, 0, 0.15)',
+  gameAccent: THEME_COLORS.primary,
+  gameAccentLight: 'rgba(255, 153, 0, 0.44)',
   gameAccentMedium: 'rgba(255, 152, 0, 0.25)',
   gameOverlay: 'rgba(0, 0, 0, 0.4)',
-  gameOverlayLight: 'rgba(0, 0, 0, 0.3)',
-  gameOverlayDark: 'rgba(0, 0, 0, 0.6)',
+  gameOverlayLight: THEME_COLORS.overlayTop,
+  gameOverlayDark: THEME_COLORS.overlayBottom,
   
   // Shadow Colors
-  shadowPrimary: '#000000',
-  shadowSecondary: '#ff9800',
+  shadowPrimary: THEME_COLORS.black,
+  shadowSecondary: THEME_COLORS.primary,
 };

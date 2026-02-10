@@ -23,7 +23,7 @@ interface Level {
 
 export default function LevelScreen() {
   const navigation = useNavigation();
-  const coinCount = 1250;
+  const coinCount = 1258;
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -120,94 +120,126 @@ export default function LevelScreen() {
     { x: wp(80), y: hp(178) },
   ];
 
-  // Generate random positions along the path WITHOUT OVERLAPPING
+  // Generate levels with EQUAL spacing along the path
   const generateLevelsOnPath = (numLevels: number) => {
     const levels: Level[] = [];
-    const minDistance = wp(15); // Minimum distance between levels to prevent overlap
     
-    // LEVEL 1: Always at the start point
-    levels.push({
-      id: 1,
-      levelNumber: 1,
-      isUnlocked: true,
-      stars: Math.floor(Math.random() * 4),
-      x: basePathPoints[0].x,
-      y: basePathPoints[0].y
-    });
-    
-    // Create path segments
-    const segments = [];
-    for (let i = 1; i < basePathPoints.length; i++) {
-      const prev = basePathPoints[i - 1];
-      const curr = basePathPoints[i];
-      const deltaY = curr.y - prev.y;
+    // Calculate total path length
+    const calculatePathLength = () => {
+      let totalLength = 0;
       
-      segments.push({
-        type: Math.abs(deltaY) < hp(5) ? 'line' : 'curve',
-        prev,
-        curr,
-        deltaY,
-        index: i - 1
-      });
-    }
-    
-    // Helper function to check if point is too close to existing levels
-    const isTooClose = (newX: number, newY: number) => {
-      return levels.some(level => {
-        const dx = newX - level.x;
-        const dy = newY - level.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance < minDistance;
-      });
+      for (let i = 1; i < basePathPoints.length; i++) {
+        const prev = basePathPoints[i - 1];
+        const curr = basePathPoints[i];
+        const deltaY = curr.y - prev.y;
+        
+        if (Math.abs(deltaY) < hp(5)) {
+          // Straight line distance
+          const dx = curr.x - prev.x;
+          const dy = curr.y - prev.y;
+          totalLength += Math.sqrt(dx * dx + dy * dy);
+        } else {
+          // Approximate curve length using multiple samples
+          const samples = 20;
+          let curveLength = 0;
+          
+          const horizontalOffset = Math.abs(curr.x - prev.x) * 0.4;
+          const cp1x = prev.x + (curr.x > prev.x ? horizontalOffset : -horizontalOffset);
+          const cp1y = prev.y + (deltaY * 0.6);
+          const cp2x = curr.x + (prev.x > curr.x ? horizontalOffset : -horizontalOffset);
+          const cp2y = curr.y - (deltaY * 0.6);
+          
+          let prevPoint = { x: prev.x, y: prev.y };
+          for (let s = 1; s <= samples; s++) {
+            const t = s / samples;
+            const point = getPointOnCurve(prev.x, prev.y, cp1x, cp1y, cp2x, cp2y, curr.x, curr.y, t);
+            const dx = point.x - prevPoint.x;
+            const dy = point.y - prevPoint.y;
+            curveLength += Math.sqrt(dx * dx + dy * dy);
+            prevPoint = point;
+          }
+          totalLength += curveLength;
+        }
+      }
+      
+      return totalLength;
     };
     
-    // Distribute remaining levels (2 to numLevels)
-    let attempts = 0;
-    const maxAttempts = 1000;
-    
-    for (let i = 1; i < numLevels && attempts < maxAttempts; attempts++) {
-      // Pick a random segment based on progress
-      const progress = i / (numLevels - 1);
-      const segmentIndex = Math.min(
-        Math.floor(progress * segments.length),
-        segments.length - 1
-      );
-      const segment = segments[segmentIndex];
+    // Get point at specific distance along path
+    const getPointAtDistance = (targetDistance: number) => {
+      let accumulatedDistance = 0;
       
-      // Pick a random position within the segment
-      const t = 0.2 + Math.random() * 0.6;
-      
-      let point;
-      if (segment.type === 'line') {
-        point = getPointOnLine(segment.prev.x, segment.prev.y, segment.curr.x, segment.curr.y, t);
-      } else {
-        const midY = segment.prev.y + (segment.deltaY / 2);
-        const cp1x = segment.prev.x;
-        const cp1y = midY;
-        const cp2x = segment.curr.x;
-        const cp2y = midY;
+      for (let i = 1; i < basePathPoints.length; i++) {
+        const prev = basePathPoints[i - 1];
+        const curr = basePathPoints[i];
+        const deltaY = curr.y - prev.y;
         
-        point = getPointOnCurve(
-          segment.prev.x, segment.prev.y,
-          cp1x, cp1y,
-          cp2x, cp2y,
-          segment.curr.x, segment.curr.y,
-          t
-        );
+        if (Math.abs(deltaY) < hp(5)) {
+          // Straight line segment
+          const dx = curr.x - prev.x;
+          const dy = curr.y - prev.y;
+          const segmentLength = Math.sqrt(dx * dx + dy * dy);
+          
+          if (accumulatedDistance + segmentLength >= targetDistance) {
+            const remainingDistance = targetDistance - accumulatedDistance;
+            const t = remainingDistance / segmentLength;
+            return getPointOnLine(prev.x, prev.y, curr.x, curr.y, t);
+          }
+          
+          accumulatedDistance += segmentLength;
+        } else {
+          // Curve segment
+          const samples = 20;
+          const horizontalOffset = Math.abs(curr.x - prev.x) * 0.4;
+          const cp1x = prev.x + (curr.x > prev.x ? horizontalOffset : -horizontalOffset);
+          const cp1y = prev.y + (deltaY * 0.6);
+          const cp2x = curr.x + (prev.x > curr.x ? horizontalOffset : -horizontalOffset);
+          const cp2y = curr.y - (deltaY * 0.6);
+          
+          let prevPoint = { x: prev.x, y: prev.y };
+          
+          for (let s = 1; s <= samples; s++) {
+            const t = s / samples;
+            const point = getPointOnCurve(prev.x, prev.y, cp1x, cp1y, cp2x, cp2y, curr.x, curr.y, t);
+            const dx = point.x - prevPoint.x;
+            const dy = point.y - prevPoint.y;
+            const segmentLength = Math.sqrt(dx * dx + dy * dy);
+            
+            if (accumulatedDistance + segmentLength >= targetDistance) {
+              const remainingDistance = targetDistance - accumulatedDistance;
+              const ratio = remainingDistance / segmentLength;
+              return {
+                x: prevPoint.x + (point.x - prevPoint.x) * ratio,
+                y: prevPoint.y + (point.y - prevPoint.y) * ratio
+              };
+            }
+            
+            accumulatedDistance += segmentLength;
+            prevPoint = point;
+          }
+        }
       }
       
-      // Check if this position is too close to existing levels
-      if (!isTooClose(point.x, point.y)) {
-        levels.push({
-          id: i + 1,
-          levelNumber: i + 1,
-          isUnlocked: i < 5,
-          stars: i < 3 ? Math.floor(Math.random() * 4) : 0,
-          x: point.x,
-          y: point.y
-        });
-        i++; // Only increment if we successfully placed a level
-      }
+      // If we've gone past the end, return the last point
+      return basePathPoints[basePathPoints.length - 1];
+    };
+    
+    const totalLength = calculatePathLength();
+    const spacing = totalLength / (numLevels - 1);
+    
+    // Generate levels at equal intervals
+    for (let i = 0; i < numLevels; i++) {
+      const distance = i * spacing;
+      const point = getPointAtDistance(distance);
+      
+      levels.push({
+        id: i + 1,
+        levelNumber: i + 1,
+        isUnlocked: i < 5,
+        stars: i < 3 ? Math.floor(Math.random() * 4) : 0,
+        x: point.x,
+        y: point.y
+      });
     }
     
     return levels;
@@ -240,82 +272,79 @@ export default function LevelScreen() {
 
   // Generate complete snake path with rounded corners at turns
   const generateSnakePath = () => {
-  if (basePathPoints.length === 0) return '';
-  
-  let pathString = `M ${basePathPoints[0].x} ${basePathPoints[0].y}`;
-  
-  const cornerRadius = wp(13); // INCREASED from wp(8) for more curve
-  
-  for (let i = 1; i < basePathPoints.length; i++) {
-    const prev = basePathPoints[i - 1];
-    const curr = basePathPoints[i];
-    const next = i < basePathPoints.length - 1 ? basePathPoints[i + 1] : null;
+    if (basePathPoints.length === 0) return '';
     
-    const deltaX = curr.x - prev.x;
-    const deltaY = curr.y - prev.y;
+    let pathString = `M ${basePathPoints[0].x} ${basePathPoints[0].y}`;
     
-    if (Math.abs(deltaY) < hp(5)) {
-      // Horizontal line
-      if (next) {
-        const nextDeltaY = next.y - curr.y;
-        const isNextCurve = Math.abs(nextDeltaY) >= hp(5);
-        
-        if (isNextCurve) {
-          const lineEndX = curr.x + (deltaX > 0 ? -cornerRadius : cornerRadius);
-          pathString += ` L ${lineEndX} ${curr.y}`;
+    const cornerRadius = wp(13);
+    
+    for (let i = 1; i < basePathPoints.length; i++) {
+      const prev = basePathPoints[i - 1];
+      const curr = basePathPoints[i];
+      const next = i < basePathPoints.length - 1 ? basePathPoints[i + 1] : null;
+      
+      const deltaX = curr.x - prev.x;
+      const deltaY = curr.y - prev.y;
+      
+      if (Math.abs(deltaY) < hp(5)) {
+        // Horizontal line
+        if (next) {
+          const nextDeltaY = next.y - curr.y;
+          const isNextCurve = Math.abs(nextDeltaY) >= hp(5);
           
-          const controlX = curr.x;
-          const controlY = curr.y;
-          const endX = curr.x;
-          const endY = curr.y + (nextDeltaY > 0 ? cornerRadius : -cornerRadius);
-          
-          pathString += ` Q ${controlX} ${controlY}, ${endX} ${endY}`;
+          if (isNextCurve) {
+            const lineEndX = curr.x + (deltaX > 0 ? -cornerRadius : cornerRadius);
+            pathString += ` L ${lineEndX} ${curr.y}`;
+            
+            const controlX = curr.x;
+            const controlY = curr.y;
+            const endX = curr.x;
+            const endY = curr.y + (nextDeltaY > 0 ? cornerRadius : -cornerRadius);
+            
+            pathString += ` Q ${controlX} ${controlY}, ${endX} ${endY}`;
+          } else {
+            pathString += ` L ${curr.x} ${curr.y}`;
+          }
         } else {
           pathString += ` L ${curr.x} ${curr.y}`;
         }
       } else {
-        pathString += ` L ${curr.x} ${curr.y}`;
-      }
-    } else {
-      // Vertical S-curve with MORE curviness
-      const midY = prev.y + (deltaY / 2);
-      
-      // INCREASED horizontal offset for more pronounced S-curve
-      const horizontalOffset = Math.abs(curr.x - prev.x) * 0.4; // Added horizontal control
-      
-      const cp1x = prev.x + (curr.x > prev.x ? horizontalOffset : -horizontalOffset);
-      const cp1y = prev.y + (deltaY * 0.6); // Changed from midY for more curve
-      
-      const cp2x = curr.x + (prev.x > curr.x ? horizontalOffset : -horizontalOffset);
-      const cp2y = curr.y - (deltaY * 0.6); // Changed from midY for more curve
-      
-      if (next) {
-        const nextDeltaX = next.x - curr.x;
-        const isNextHorizontal = Math.abs(nextDeltaX) > wp(10);
+        // Vertical S-curve with MORE curviness
+        const horizontalOffset = Math.abs(curr.x - prev.x) * 0.4;
         
-        if (isNextHorizontal) {
-          const curveEndY = curr.y - (deltaY > 0 ? cornerRadius : -cornerRadius);
-          const tempCp2y = cp2y - (deltaY > 0 ? cornerRadius * 0.5 : -cornerRadius * 0.5);
+        const cp1x = prev.x + (curr.x > prev.x ? horizontalOffset : -horizontalOffset);
+        const cp1y = prev.y + (deltaY * 0.6);
+        
+        const cp2x = curr.x + (prev.x > curr.x ? horizontalOffset : -horizontalOffset);
+        const cp2y = curr.y - (deltaY * 0.6);
+        
+        if (next) {
+          const nextDeltaX = next.x - curr.x;
+          const isNextHorizontal = Math.abs(nextDeltaX) > wp(10);
           
-          pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${tempCp2y}, ${curr.x} ${curveEndY}`;
-          
-          const controlX = curr.x;
-          const controlY = curr.y;
-          const endX = curr.x + (nextDeltaX > 0 ? cornerRadius : -cornerRadius);
-          const endY = curr.y;
-          
-          pathString += ` Q ${controlX} ${controlY}, ${endX} ${endY}`;
+          if (isNextHorizontal) {
+            const curveEndY = curr.y - (deltaY > 0 ? cornerRadius : -cornerRadius);
+            const tempCp2y = cp2y - (deltaY > 0 ? cornerRadius * 0.5 : -cornerRadius * 0.5);
+            
+            pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${tempCp2y}, ${curr.x} ${curveEndY}`;
+            
+            const controlX = curr.x;
+            const controlY = curr.y;
+            const endX = curr.x + (nextDeltaX > 0 ? cornerRadius : -cornerRadius);
+            const endY = curr.y;
+            
+            pathString += ` Q ${controlX} ${controlY}, ${endX} ${endY}`;
+          } else {
+            pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
+          }
         } else {
           pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
         }
-      } else {
-        pathString += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${curr.x} ${curr.y}`;
       }
     }
-  }
-  
-  return pathString;
-};
+    
+    return pathString;
+  };
 
   return (
     <ImageBackground source={{ uri: IMAGE_URL.BG }} style={styles.backgroundImage}>
@@ -365,7 +394,7 @@ export default function LevelScreen() {
               <Path
                 d={generateSnakePath()}
                 stroke="rgba(0, 0, 0, 0.5)"
-                strokeWidth="8"
+                strokeWidth="17"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -375,7 +404,7 @@ export default function LevelScreen() {
               <Path
                 d={generateSnakePath()}
                 stroke="#A0704A"
-                strokeWidth="7"
+                strokeWidth="15"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -385,7 +414,7 @@ export default function LevelScreen() {
               <Path
                 d={generateSnakePath()}
                 stroke="#C8986C"
-                strokeWidth="4"
+                strokeWidth="15"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -395,7 +424,7 @@ export default function LevelScreen() {
               <Path
                 d={generateSnakePath()}
                 stroke="rgba(255, 255, 255, 0.9)"
-                strokeWidth="2"
+                strokeWidth="1"
                 fill="none"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -415,31 +444,34 @@ export default function LevelScreen() {
                   height: wp(20),
                   alignItems: 'center',
                   justifyContent: 'center',
-                  zIndex: 100, // Ensure levels are above the path
+                  zIndex: 100,
                 }}
               >
                 <TouchableOpacity
-                  style={[
-                    styles.levelNode,
-                    !level.isUnlocked && styles.levelNodeLocked,
-                  ]}
                   onPress={() => handleLevelPress(level)}
                   activeOpacity={level.isUnlocked ? 0.7 : 1}
                   disabled={!level.isUnlocked}
+                  style={styles.levelNodeTouchable}
                 >
                   {level.isUnlocked ? (
-                    <>
+                    <ImageBackground
+                      source={{ uri: IMAGE_URL.LEVEL_NUM_BG }}
+                      style={styles.levelNode}
+                      resizeMode="contain"
+                    >
                       <Text style={styles.levelNumber}>{level.levelNumber}</Text>
                       {level.stars > 0 && renderStars(level.stars)}
-                    </>
+                    </ImageBackground>
                   ) : (
-                    <Lock size={RFValue(20)} color={COLORS.textMuted} strokeWidth={2.5} />
+                    <View style={styles.levelNodeLocked}>
+                      <Lock size={RFValue(18)} color={COLORS.textMuted} strokeWidth={2} />
+                    </View>
                   )}
                 </TouchableOpacity>
 
                 {level.levelNumber % 10 === 0 && (
                   <View style={styles.specialLevelBadge}>
-                    <Text style={styles.specialLevelText}>BOSS</Text>
+                    <Text style={styles.specialLevelText}>HARD</Text>
                   </View>
                 )}
               </View>
