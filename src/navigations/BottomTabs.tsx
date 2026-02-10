@@ -18,6 +18,7 @@ import Profile from '../screens/ProfileScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 
 import { IMAGE_URL } from '../constants/image';
+import { COLORS, RADIUS, SPACING } from '../constants/theme';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,24 +35,24 @@ export default function BottomTabs({ userWallet, userReferralCode, onLogout }: B
         headerShown: false,
         tabBarStyle: {
           height: hp(8),
-          paddingBottom: hp(2),
-          backgroundColor: '#0b0b0b',
+          paddingBottom: SPACING.md,
+          backgroundColor: COLORS.backgroundDark,
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
           position: 'absolute',
-          borderRadius: wp(8), // Pill shape - top right
-          marginHorizontal: wp(4), // Add margin from sides
-          left: wp(4),
-          right: wp(4),
-          bottom: hp(4), // Lift it up from bottom
+          borderRadius: RADIUS.lg + 25,
+          marginHorizontal: SPACING.xs,
+          left: SPACING.xs,
+          right: SPACING.xs,
+          bottom: SPACING.md,
         },
         tabBarLabelStyle: {
           fontSize: RFValue(11),
         },
         tabBarShowLabel: false,
-        tabBarActiveTintColor: '#ff9800',
-        tabBarInactiveTintColor: '#888',
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: COLORS.textMuted,
 
         tabBarIcon: ({ focused }) => {
           let iconSource;
@@ -79,7 +80,7 @@ export default function BottomTabs({ userWallet, userReferralCode, onLogout }: B
               source={iconSource}
               style={[
                 styles.tabIcon,
-                { opacity: focused ? 1 : 0.6 },
+                { opacity: focused ? 1 : 0.5 },
               ]}
               resizeMode="contain"
             />

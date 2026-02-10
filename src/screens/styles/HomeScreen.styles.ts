@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS } from '../../constants/colors';
+import { COLORS, SPACING, RADIUS, createBackgroundOverlay, createTextShadow } from '../../constants/theme';
 
 export const styles = StyleSheet.create({
   backgroundImage: {
@@ -13,27 +13,28 @@ export const styles = StyleSheet.create({
   },
   coinText: {
     position: 'absolute',
-    left: wp(16),       // adjust based on design
+    left: wp(16),
     top: wp(8.2),
     fontSize: RFValue(15),
     fontWeight: 'bold',
-    color: '#dca91dff',   // or white depending on bg
+    color: COLORS.gold,
+    ...createTextShadow(),
   },
   container: { 
     flex: 1, 
     justifyContent: 'center', 
     alignItems: 'center',
-    backgroundColor: COLORS.backgroundOverlay,
-    paddingHorizontal: wp(8),
+    ...createBackgroundOverlay(),
+    paddingHorizontal: SPACING.sm,
   },
   walletContainer: {
     position: 'absolute',
     top: hp(6),
     left: wp(4),
-    backgroundColor: COLORS.gameOverlayDark,
-    paddingHorizontal: wp(3),
-    paddingVertical: hp(1),
-    borderRadius: wp(2),
+    backgroundColor: COLORS.cardBackground,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    borderRadius: RADIUS.sm,
     borderWidth: 1,
     borderColor: COLORS.borderPrimary,
   },
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
     marginBottom: hp(0.5),
   },
   userIcon: {
-    marginRight: wp(1),
+    marginRight: SPACING.xs,
     top: wp(0.5)
   },
   walletAddressTopLeft: {
@@ -54,11 +55,11 @@ export const styles = StyleSheet.create({
   },
   coinContainer: {
     position: 'absolute',
-    top: hp(3), // Position below email container
+    top: hp(3),
     left: wp(1),
   },
   coinButton: {
-    padding: wp(1),
+    padding: SPACING.xs,
   },
   coinImage: {
     width: wp(35),
@@ -66,11 +67,11 @@ export const styles = StyleSheet.create({
   },
   dailyRewardContainer: {
     position: 'absolute',
-    top: hp(11), // Position below coin container
+    top: hp(11),
     left: wp(-2),
   },
   dailyRewardButton: {
-    padding: wp(1),
+    padding: SPACING.xs,
   },
   dailyRewardImage: {
     width: wp(30),
@@ -82,7 +83,7 @@ export const styles = StyleSheet.create({
     right: wp(17),
   },
   notificationButton: {
-    padding: wp(2),
+    padding: SPACING.sm,
   },
   notificationIcon: {
     width: wp(12),
@@ -96,7 +97,7 @@ export const styles = StyleSheet.create({
     right: wp(1),
   },
   infoButton: {
-    padding: wp(2),
+    padding: SPACING.sm,
   },
   infoIcon: {
     width: wp(20),
@@ -106,11 +107,11 @@ export const styles = StyleSheet.create({
   },
   dailyChallengeContainer: {
     position: 'absolute',
-    top: hp(11), // Position below notification and info buttons
+    top: hp(11),
     right: wp(-2),
   },
   dailyChallengeButton: {
-    padding: wp(1),
+    padding: SPACING.xs,
   },
   dailyChallengeImage: {
     width: wp(30),
@@ -121,19 +122,20 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.textPrimary,
     textAlign: 'center',
-    marginBottom: hp(3),
+    marginBottom: SPACING.lg,
+    ...createTextShadow(),
   },
   walletText: {
     fontSize: RFValue(14),
     color: COLORS.textMuted,
-    marginBottom: hp(1),
+    marginBottom: SPACING.xs,
   },
   walletAddress: {
     fontSize: RFValue(12),
     color: COLORS.primary,
     fontFamily: 'monospace',
     textAlign: 'center',
-    marginBottom: hp(3),
+    marginBottom: SPACING.lg,
     paddingHorizontal: wp(4),
   },
   subtitle: {
@@ -143,23 +145,50 @@ export const styles = StyleSheet.create({
   },
   promoBannerContainer: {
     alignItems: 'center',
-    marginVertical: hp(2),
+    marginVertical: SPACING.md,
     bottom: wp(-28),
-    opacity: 0.7
+  },
+  promoBannerFrame: {
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.xs,
+    borderWidth: 1,
+    borderColor: COLORS.borderPrimary,
   },
   promoBannerButton: {
-    padding: wp(1),
+    position: 'relative',
+    borderRadius: RADIUS.md,
+    overflow: 'hidden',
   },
   promoBannerImage: {
     width: wp(65),
     height: wp(43),
-    borderRadius: wp(2),
+    borderRadius: RADIUS.md,
+    opacity: 0.7
+  },
+  promoBadge: {
+    position: 'absolute',
+    top: SPACING.sm,
+    right: SPACING.sm,      // Re-enabled background
+    paddingHorizontal: SPACING.xs + 2,  // Adjusted for icon
+    paddingVertical: SPACING.xs + 2,    // Adjusted for icon
+    borderRadius: RADIUS.sm,
+    borderWidth: 0.3,                      // Increased border
+    borderColor: COLORS.goldDark,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  promoBadgeText: {
+    fontSize: RFValue(5),
+    fontWeight: 'bold',
+    color: COLORS.white,
+    letterSpacing: 0.4,
   },
   playButton: {
     width: wp(50),
     height: wp(20),
     position: 'absolute',
-    bottom: hp(18), // Position above bottom navigation
+    bottom: hp(18),
     alignSelf: 'center',
   },
   playButtonImage: {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, Image, Animated } from 'react-native';
-import { User } from 'lucide-react-native';
+import { ArrowUpRight } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import { IMAGE_URL } from '../constants/image';
 import { COLORS } from '../constants/colors';
@@ -197,21 +197,25 @@ export default function HomeScreen({ userWallet }: HomeScreenProps) {
         </View>
 
 
-        {/* <Text style={styles.title}>Welcome to Bubble Shooter!</Text>
-        <Text style={styles.walletText}>Connected Wallet:</Text>
-        <Text style={styles.walletAddress}>{userWallet}</Text>
-        <Text style={styles.subtitle}>Ready to start playing?</Text> */}
-
         {/* Promo Banner - Above Play Button */}
-        {/* <View style={styles.promoBannerContainer}>
-          <TouchableOpacity style={styles.promoBannerButton}>
-            <Image
-              source={{ uri: IMAGE_URL.PROMO_BANNER }}
-              style={styles.promoBannerImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View> */}
+        <View style={styles.promoBannerContainer}>
+          <View style={styles.promoBannerFrame}>
+            <TouchableOpacity 
+              style={styles.promoBannerButton}
+              activeOpacity={0.8}
+            >
+              <Image
+                source={{ uri: IMAGE_URL.PROMO_BANNER }}
+                style={styles.promoBannerImage}
+                resizeMode="cover"
+              />
+              {/* Arrow badge pointing 45deg upwards */}
+              <View style={styles.promoBadge}>
+                <ArrowUpRight size={16} color={COLORS.white} strokeWidth={3} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
 
         {/* Play Button */}
         <TouchableOpacity style={styles.playButton} onPress={handlePlayPress}>
