@@ -40,7 +40,7 @@ export const COLORS = {
   
   // Game Specific Colors
   gameAccent: '#ff9800', // Same as primary for consistency
-  gameAccentLight: 'rgba(255, 152, 0, 0.15)',
+  gameAccentLight: 'rgba(255, 153, 0, 0.44)',
   gameAccentMedium: 'rgba(255, 152, 0, 0.25)',
   gameOverlay: 'rgba(0, 0, 0, 0.4)',
   gameOverlayLight: 'rgba(0, 0, 0, 0.3)',

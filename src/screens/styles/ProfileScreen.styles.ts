@@ -41,14 +41,16 @@ export const styles = StyleSheet.create({
     padding: wp(1),
   },
   settingsIcon: {
-    width: wp(10),
-    height: wp(10),
+    width: wp(12),
+    height: wp(12),
+    left: wp(3)
   },
   menuButton: {
     padding: wp(2),
     backgroundColor: COLORS.gameOverlayLight,
     borderRadius: wp(6),
     borderWidth: 1,
+    left: wp(2),
     borderColor: COLORS.borderLight,
   },
   dropdownMenu: {
