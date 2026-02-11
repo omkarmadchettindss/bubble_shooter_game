@@ -6,7 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE_URL } from '../constants/image';
+import { IMAGE_URL, getLevelBackground } from '../constants/image';
 import { COLORS } from '../constants/colors';
 import { styles } from './styles/PlayScreen.styles';
 
@@ -14,13 +14,14 @@ export default function PlayScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const levelNumber = (route.params as any)?.levelNumber || 1;
+  const levelBg = getLevelBackground(levelNumber);
 
   const handleBackPress = () => {
     navigation.goBack();
   };
 
   return (
-    <ImageBackground source={{ uri: IMAGE_URL.BG }} style={styles.backgroundImage}>
+    <ImageBackground source={{ uri: levelBg }} style={styles.backgroundImage}>
       <View style={styles.container}>
         {/* Back button */}
         <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>

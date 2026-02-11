@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS } from '../../constants/colors';
+import { COLORS, SPACING, createBackgroundOverlay, createTextShadow } from '../../constants/theme';
 
 export const styles = StyleSheet.create({
   backgroundImage: {
@@ -13,12 +13,12 @@ export const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    ...createBackgroundOverlay(),
   },
   backButton: {
     position: 'absolute',
-    top: hp(5.1),
-    left: wp(84),
+    top: hp(5.3),
+    left: wp(84.2),
     width: wp(12),
     height: wp(12),
     justifyContent: 'center',
@@ -33,23 +33,21 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: wp(8),
+    paddingHorizontal: SPACING.md,
   },
   levelTitle: {
     fontSize: RFValue(32),
     fontWeight: 'bold',
     color: COLORS.primary,
     textAlign: 'center',
-    marginBottom: hp(2),
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    marginBottom: SPACING.md,
+    ...createTextShadow(),
   },
   comingSoon: {
     fontSize: RFValue(18),
     color: COLORS.textPrimary,
     textAlign: 'center',
-    marginBottom: hp(1),
+    marginBottom: SPACING.xs,
     fontWeight: '600',
   },
   subtitle: {

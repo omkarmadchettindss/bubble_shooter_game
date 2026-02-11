@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ImageBackground, Image, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { CheckCheck } from 'lucide-react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import { IMAGE_URL } from '../constants/image';
+import { COLORS } from '../constants/colors';
 import { styles } from './styles/NotificationScreen.styles';
 
 interface NotificationItem {
@@ -12,7 +15,7 @@ interface NotificationItem {
 }
 
 export default function NotificationScreen() {
-  const notifications: NotificationItem[] = [
+  const [notifications, setNotifications] = useState<NotificationItem[]>([
     {
       id: '1',
       title: 'Daily Reward Ready! 🎁',
@@ -62,11 +65,28 @@ export default function NotificationScreen() {
       time: '1 hour ago',
       read: true,
     },
-  ];
+  ]);
+
+  const handleMarkAllAsRead = () => {
+    setNotifications(prevNotifications =>
+      prevNotifications.map(notification => ({
+        ...notification,
+        read: true,
+      }))
+    );
+  };
 
   return (
     <ImageBackground source={{ uri: IMAGE_URL.BG }} style={styles.backgroundImage}>
       <View style={styles.container}>
+        <TouchableOpacity 
+          style={styles.markAllButton}
+          onPress={handleMarkAllAsRead}
+          activeOpacity={0.7}
+        >
+          <CheckCheck size={RFValue(20)} color={COLORS.primary} strokeWidth={3} />
+        </TouchableOpacity>
+
         <View style={styles.notificationBoardContainer}>
           <Image 
             source={{ uri: IMAGE_URL.NOTIFICATION_BG }} 

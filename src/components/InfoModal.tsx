@@ -30,6 +30,11 @@ export default function InfoModal({ visible, onClose }: InfoModalProps) {
 
   useEffect(() => {
     if (visible) {
+      // Reset animation values before starting
+      slideAnim.setValue(height);
+      fadeAnim.setValue(0);
+      scaleAnim.setValue(0.8);
+      
       // Show animation
       Animated.parallel([
         Animated.timing(fadeAnim, {

@@ -3,7 +3,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS } from '../../constants/colors';
+import { COLORS, SPACING, createTextShadow } from '../../constants/theme';
 import { RFValue } from 'react-native-responsive-fontsize';
 
 export const styles = StyleSheet.create({
@@ -20,8 +20,8 @@ export const styles = StyleSheet.create({
   },
   dailyRewardTagContainer: {
     alignItems: 'center',
-    marginTop: hp(2),
-    marginBottom: hp(-5),
+    marginTop: SPACING.md,
+    marginBottom: -hp(5),
     zIndex: 10,
   },
   dailyRewardTag: {
@@ -46,8 +46,8 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: wp(5),
-    paddingTop: hp(0),
+    paddingHorizontal: SPACING.md,
+    paddingTop: 0,
   },
   scrollContainer: {
     flex: 1,
@@ -63,14 +63,14 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: wp(90),
-    marginBottom: hp(-8),
+    marginBottom: -hp(8),
   },
   rewardItem: {
     width: wp(40),
     height: hp(25),
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: wp(2),
+    marginHorizontal: SPACING.sm,
   },
   rewardImage: {
     width: wp(42),
@@ -81,8 +81,7 @@ export const styles = StyleSheet.create({
     height: hp(30),
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: wp(2),
-    
+    marginHorizontal: SPACING.sm,
   },
   day7RewardImage: {
     width: wp(60),
@@ -90,44 +89,36 @@ export const styles = StyleSheet.create({
     bottom: hp(6)
   },
   dayText: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: RFValue(14),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: hp(-4),
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    marginTop: -hp(4),
+    ...createTextShadow(),
   },
   day5Text: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: RFValue(14),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: hp(-3.5),
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    marginTop: -hp(3.5),
+    ...createTextShadow(),
   },
   day6Text: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: RFValue(14),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: hp(-3.5),
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    marginTop: -hp(3.5),
+    ...createTextShadow(),
   },
   day7Text: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontSize: RFValue(14),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: hp(-13),
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    marginTop: -hp(13),
+    ...createTextShadow(),
   },
   disabledRewardItem: {
     opacity: 1,
@@ -137,6 +128,6 @@ export const styles = StyleSheet.create({
   },
   disabledDayText: {
     opacity: 1,
-    color: '#888888',
+    color: COLORS.textMuted,
   },
 });

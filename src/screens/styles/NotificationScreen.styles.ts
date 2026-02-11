@@ -4,7 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { COLORS } from '../../constants/colors';
+import { COLORS, SPACING, RADIUS, createBackgroundOverlay, createTextShadow } from '../../constants/theme';
 
 export const styles = StyleSheet.create({
   backgroundImage: {
@@ -15,16 +15,25 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: COLORS.backgroundOverlay
+    ...createBackgroundOverlay(),
   },
   title: {
     fontSize: RFValue(17),
     fontWeight: 'bold',
-    color: '#7d511cff',
+    color: COLORS.goldDark,
     bottom: wp(69),
-    textShadowColor: COLORS.borderPrimary,
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
+    // ...createTextShadow(),
+  },
+  markAllButton: {
+    position: 'absolute',
+    top: hp(5),
+    right: SPACING.md,
+    padding: SPACING.sm,
+    borderRadius: RADIUS.sm,
+    backgroundColor: 'rgba(255, 152, 0, 0.15)',
+    borderWidth: 1,
+    borderColor: COLORS.primary,
+    zIndex: 100,
   },
   notificationBoardContainer: {
     width: wp(90),
@@ -42,7 +51,7 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     width: wp(67.5),
     height: hp(58.5),
-    borderRadius: 15,
+    borderRadius: RADIUS.md+8,
     top: hp(10.50),
     left: wp(11.25),
     overflow: 'hidden',
@@ -51,21 +60,22 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   notificationsContent: {
-    paddingVertical: hp(1),
+    paddingVertical: SPACING.xs,
   },
   notificationItem: {
-    backgroundColor: 'rgba(42, 42, 42, 0.85)',
-    borderRadius: wp(3),
-    padding: wp(3),
-    marginBottom: hp(1.5),
-    // borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.sm,
+    marginBottom: SPACING.md - SPACING.xs,
+    // borderWidth: 1,
+    // borderColor: COLORS.borderLight,
     flexDirection: 'row',
     alignItems: 'center',
   },
   unreadNotification: {
     backgroundColor: 'rgba(255, 152, 0, 0.12)',
     borderColor: COLORS.primary,
+    borderWidth: 0.2,
   },
   notificationContent: {
     flex: 1,
@@ -73,12 +83,12 @@ export const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: RFValue(11),
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: COLORS.goldDark,
     marginBottom: hp(0.3),
   },
   notificationMessage: {
     fontSize: RFValue(9),
-    color: 'rgba(134, 93, 32, 0.75)',
+    color: COLORS.textSecondary,
     marginBottom: hp(0.3),
     lineHeight: RFValue(13),
   },
@@ -92,6 +102,6 @@ export const styles = StyleSheet.create({
     height: wp(2.5),
     borderRadius: wp(1.25),
     backgroundColor: COLORS.primary,
-    marginLeft: wp(2),
+    marginLeft: SPACING.sm,
   },
 });
