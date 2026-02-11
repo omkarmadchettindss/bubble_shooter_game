@@ -237,7 +237,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                   </Animated.Text>
                 )} */}
                 <Text style={styles.loginButtonText}>
-                  {isLoading ? 'SIGNING IN...' : 'LOGIN'}
+                  {isLoading ? 'LOGIN' : 'LOGIN'}
                 </Text>
               </View>
               <View style={[styles.buttonGlow, isLoading && styles.buttonGlowActive]} />
@@ -250,13 +250,9 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               disabled={isLoading}
             >
               <View style={styles.buttonContent}>
-                {/* {isLoading && (
-                  <Animated.Text style={[styles.loadingIcon, { transform: [{ rotate: spin }] }]}>
-                    ⚡
-                  </Animated.Text>
-                )} */}
+                <Text style={styles.googleIcon}>G</Text>
                 <Text style={styles.googleButtonText}>
-                  {isLoading ? 'CONNECTING...' : 'GOOGLE'}
+                  {isLoading ? 'GOOGLE' : 'GOOGLE'}
                 </Text>
               </View>
               <View style={[styles.buttonGlow, isLoading && styles.buttonGlowActive]} />

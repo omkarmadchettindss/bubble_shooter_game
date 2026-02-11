@@ -30,9 +30,10 @@ export default function AppNavigator() {
       screenOptions={{ 
         headerShown: false,
         animationEnabled: false,
-        cardStyleInterpolator: ({ current }) => ({
+        presentation: 'transparentModal',
+        cardStyleInterpolator: () => ({
           cardStyle: {
-            opacity: current.progress,
+            opacity: 1,
           },
         }),
       }}
