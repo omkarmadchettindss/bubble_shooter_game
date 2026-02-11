@@ -64,11 +64,11 @@ export const styles = StyleSheet.create({
   levelMapContent: {
     paddingVertical: SPACING.md,
     paddingBottom: hp(10),
-    minHeight: hp(180),
+    minHeight: hp(620),
   },
   pathContainer: {
     width: '100%',
-    height: hp(175),
+    minHeight: hp(610),
     position: 'relative',
     bottom: wp(-20),
     top: wp(-10)
@@ -114,6 +114,13 @@ export const styles = StyleSheet.create({
     fontSize: RFValue(18),
     fontWeight: 'bold',
     color: '#201f1fae',
+  },
+  hardLevelText: {
+    fontSize: RFValue(10),
+    fontWeight: 'bold',
+    color: '#201f1fae',
+    textAlign: 'center',
+    lineHeight: RFValue(12),
   },
   starsContainer: {
     flexDirection: 'row',

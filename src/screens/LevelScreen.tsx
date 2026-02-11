@@ -57,68 +57,33 @@ export default function LevelScreen() {
     };
   };
 
-  // Define the base path structure
-  const basePathPoints = [
-    // Row 1: Left to Right
-    { x: wp(20), y: hp(10) },
-    { x: wp(80), y: hp(10) },
+  // Define the base path structure - dynamically generated for 100 levels
+  const generatePathPoints = () => {
+    const points = [];
+    const rowSpacing = hp(12);
+    const startY = hp(10);
+    const leftX = wp(20);
+    const rightX = wp(80);
     
-    // Row 2: Right to Left
-    { x: wp(80), y: hp(22) },
-    { x: wp(20), y: hp(22) },
+    // Generate 50 rows (100 points) to accommodate 100 levels
+    for (let i = 0; i < 50; i++) {
+      const y = startY + (i * rowSpacing);
+      
+      if (i % 2 === 0) {
+        // Even rows: Left to Right
+        points.push({ x: leftX, y });
+        points.push({ x: rightX, y });
+      } else {
+        // Odd rows: Right to Left
+        points.push({ x: rightX, y });
+        points.push({ x: leftX, y });
+      }
+    }
     
-    // Row 3: Left to Right
-    { x: wp(20), y: hp(34) },
-    { x: wp(80), y: hp(34) },
-    
-    // Row 4: Right to Left
-    { x: wp(80), y: hp(46) },
-    { x: wp(20), y: hp(46) },
-    
-    // Row 5: Left to Right
-    { x: wp(20), y: hp(58) },
-    { x: wp(80), y: hp(58) },
-    
-    // Row 6: Right to Left
-    { x: wp(80), y: hp(70) },
-    { x: wp(20), y: hp(70) },
-    
-    // Row 7: Left to Right
-    { x: wp(20), y: hp(82) },
-    { x: wp(80), y: hp(82) },
-    
-    // Row 8: Right to Left
-    { x: wp(80), y: hp(94) },
-    { x: wp(20), y: hp(94) },
-    
-    // Row 9: Left to Right
-    { x: wp(20), y: hp(106) },
-    { x: wp(80), y: hp(106) },
-    
-    // Row 10: Right to Left
-    { x: wp(80), y: hp(118) },
-    { x: wp(20), y: hp(118) },
-    
-    // Row 11: Left to Right
-    { x: wp(20), y: hp(130) },
-    { x: wp(80), y: hp(130) },
-    
-    // Row 12: Right to Left
-    { x: wp(80), y: hp(142) },
-    { x: wp(20), y: hp(142) },
-    
-    // Row 13: Left to Right
-    { x: wp(20), y: hp(154) },
-    { x: wp(80), y: hp(154) },
-    
-    // Row 14: Right to Left
-    { x: wp(80), y: hp(166) },
-    { x: wp(20), y: hp(166) },
-    
-    // Row 15: Left to Right
-    { x: wp(20), y: hp(178) },
-    { x: wp(80), y: hp(178) },
-  ];
+    return points;
+  };
+
+  const basePathPoints = generatePathPoints();
 
   // Generate levels with EQUAL spacing along the path
   const generateLevelsOnPath = (numLevels: number) => {
@@ -232,11 +197,20 @@ export default function LevelScreen() {
       const distance = i * spacing;
       const point = getPointAtDistance(distance);
       
+      // Deterministic star pattern based on level number
+      const getStarsForLevel = (levelNum: number) => {
+        if (levelNum <= 3) return 3;
+        if (levelNum <= 6) return 2;
+        if (levelNum <= 9) return 1;
+        // All other levels get 0 stars but are still unlocked
+        return 0;
+      };
+      
       levels.push({
         id: i + 1,
         levelNumber: i + 1,
-        isUnlocked: i < 5,
-        stars: i < 3 ? Math.floor(Math.random() * 4) : 0,
+        isUnlocked: true, // All levels unlocked
+        stars: getStarsForLevel(i + 1),
         x: point.x,
         y: point.y
       });
@@ -245,7 +219,7 @@ export default function LevelScreen() {
     return levels;
   };
 
-  const [levels] = React.useState(() => generateLevelsOnPath(30));
+  const [levels] = React.useState(() => generateLevelsOnPath(100));
 
   const handleLevelPress = (level: Level) => {
     if (level.isUnlocked) {
@@ -379,7 +353,7 @@ export default function LevelScreen() {
         >
           <View style={styles.pathContainer}>
             {/* Snake Path with rounded corners */}
-            <Svg height={hp(190)} width="100%" style={styles.snakePath}>
+            <Svg height={hp(610)} width="100%" style={styles.snakePath}>
               {/* Outer glow */}
               <Path
                 d={generateSnakePath()}
@@ -433,49 +407,49 @@ export default function LevelScreen() {
             </Svg>
 
             {/* Level Nodes */}
-            {levels.map((level) => (
-              <View
-                key={level.id}
-                style={{
-                  position: 'absolute',
-                  left: level.x - wp(10),
-                  top: level.y - wp(10),
-                  width: wp(20),
-                  height: wp(20),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  zIndex: 100,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => handleLevelPress(level)}
-                  activeOpacity={level.isUnlocked ? 0.7 : 1}
-                  disabled={!level.isUnlocked}
-                  style={styles.levelNodeTouchable}
+            {levels.map((level) => {
+              const isHardLevel = level.levelNumber % 10 === 0;
+              const isClickable = level.isUnlocked; // Use isUnlocked instead of stars
+              
+              return (
+                <View
+                  key={level.id}
+                  style={{
+                    position: 'absolute',
+                    left: level.x - wp(10),
+                    top: level.y - wp(10),
+                    width: wp(20),
+                    height: wp(20),
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 100,
+                    opacity: isClickable ? 1 : 0.75,
+                  }}
                 >
-                  {level.isUnlocked ? (
+                  <TouchableOpacity
+                    onPress={() => handleLevelPress(level)}
+                    activeOpacity={isClickable ? 0.7 : 1}
+                    disabled={!isClickable}
+                    style={styles.levelNodeTouchable}
+                  >
                     <ImageBackground
-                      source={{ uri: IMAGE_URL.LEVEL_NUM_BG }}
+                      source={{ uri: isHardLevel ? IMAGE_URL.HARD_LEVEL_BG : IMAGE_URL.LEVEL_NUM_BG }}
                       style={styles.levelNode}
                       resizeMode="contain"
                     >
-                      <Text style={styles.levelNumber}>{level.levelNumber}</Text>
-                      {level.stars > 0 && renderStars(level.stars)}
+                      {isHardLevel ? (
+                        <Text style={styles.hardLevelText}></Text>
+                      ) : (
+                        <>
+                          <Text style={styles.levelNumber}>{level.levelNumber}</Text>
+                          {level.stars > 0 && renderStars(level.stars)}
+                        </>
+                      )}
                     </ImageBackground>
-                  ) : (
-                    <View style={styles.levelNodeLocked}>
-                      <Lock size={RFValue(18)} color={COLORS.textMuted} strokeWidth={2} />
-                    </View>
-                  )}
-                </TouchableOpacity>
-
-                {level.levelNumber % 10 === 0 && (
-                  <View style={styles.specialLevelBadge}>
-                    <Text style={styles.specialLevelText}>HARD</Text>
-                  </View>
-                )}
-              </View>
-            ))}
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
           </View>
         </ScrollView>
       </View>
