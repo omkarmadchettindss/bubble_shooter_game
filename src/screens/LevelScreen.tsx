@@ -19,6 +19,7 @@ interface Level {
   stars: number;
   x: number;
   y: number;
+  buttonColor: string;
 }
 
 export default function LevelScreen() {
@@ -88,6 +89,14 @@ export default function LevelScreen() {
   // Generate levels with EQUAL spacing along the path
   const generateLevelsOnPath = (numLevels: number) => {
     const levels: Level[] = [];
+    
+    // Available button colors for non-hard levels
+    const nonHardButtonColors = [
+      IMAGE_URL.ORANGE_BUTTON,
+      IMAGE_URL.BLUE_BUTTON,
+      IMAGE_URL.GREEN_BUTTON,
+      IMAGE_URL.PURPLE_BUTTON
+    ];
     
     // Calculate total path length
     const calculatePathLength = () => {
@@ -196,6 +205,7 @@ export default function LevelScreen() {
     for (let i = 0; i < numLevels; i++) {
       const distance = i * spacing;
       const point = getPointAtDistance(distance);
+      const levelNumber = i + 1;
       
       // Deterministic star pattern based on level number
       const getStarsForLevel = (levelNum: number) => {
@@ -206,13 +216,20 @@ export default function LevelScreen() {
         return 0;
       };
       
+      // Assign button color: RED for hard levels (every 10th), random for others
+      const isHardLevel = levelNumber % 10 === 0;
+      const buttonColor = isHardLevel 
+        ? IMAGE_URL.RED_BUTTON 
+        : nonHardButtonColors[Math.floor(Math.random() * nonHardButtonColors.length)];
+      
       levels.push({
         id: i + 1,
-        levelNumber: i + 1,
+        levelNumber: levelNumber,
         isUnlocked: true, // All levels unlocked
-        stars: getStarsForLevel(i + 1),
+        stars: getStarsForLevel(levelNumber),
         x: point.x,
-        y: point.y
+        y: point.y,
+        buttonColor: buttonColor
       });
     }
     
@@ -433,18 +450,14 @@ export default function LevelScreen() {
                     style={styles.levelNodeTouchable}
                   >
                     <ImageBackground
-                      source={{ uri: isHardLevel ? IMAGE_URL.HARD_LEVEL_BG : IMAGE_URL.LEVEL_NUM_BG }}
+                      source={{ uri: level.buttonColor }}
                       style={styles.levelNode}
                       resizeMode="contain"
                     >
-                      {isHardLevel ? (
-                        <Text style={styles.hardLevelText}></Text>
-                      ) : (
-                        <>
-                          <Text style={styles.levelNumber}>{level.levelNumber}</Text>
-                          {level.stars > 0 && renderStars(level.stars)}
-                        </>
-                      )}
+                      <Text style={isHardLevel ? styles.hardLevelText : styles.levelNumber}>
+                        {level.levelNumber}
+                      </Text>
+                      {!isHardLevel && level.stars > 0 && renderStars(level.stars)}
                     </ImageBackground>
                   </TouchableOpacity>
                 </View>

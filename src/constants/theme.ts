@@ -4,45 +4,51 @@ export const COLORS = {
   primaryLight: 'rgba(255, 152, 0, 0.8)',
   primaryDark: '#e68900',
   primaryGlow: 'rgba(255, 152, 0, 0.3)',
-  
+
   // Accent - Purple for special modes (tournaments, rare rewards)
   accent: '#7C3AED',
   accentLight: 'rgba(124, 58, 237, 0.8)',
   accentDark: '#6D28D9',
-  
+
+  // Sci-Fi Blue (for Space Shooter theme)
+  sciFiBlue: '#00d2ff',
+  sciFiBlueGlow: 'rgba(0, 210, 255, 0.5)',
+  sciFiBlueDark: '#008fb3',
+  sciFiBlueLight: '#99edff',
+
   // Backgrounds
   backgroundDark: '#0b0b0b',        // Main dark background
   cardBackground: '#1a1a1a',        // Card backgrounds
   cardBackgroundLight: '#2a2a2a',   // Lighter card variant
-  
+
   // Overlays - for backgrounds, NOT for icons/rewards
   overlayTop: 'rgba(0, 0, 0, 0.3)',
   overlayBottom: 'rgba(0, 0, 0, 0.6)',
   overlayGradient: 'rgba(11, 11, 11, 0.7)',
-  
+
   // Text
   textPrimary: '#ffffff',
   textSecondary: '#947946ff',
   textMuted: '#888888',
   textDisabled: 'rgba(255, 255, 255, 0.5)',
-  
+
   // Borders
   borderPrimary: 'rgba(255, 152, 0, 0.3)',
   borderSecondary: 'rgba(255, 152, 0, 0.2)',
   borderLight: 'rgba(255, 255, 255, 0.1)',
   borderDark: 'rgba(0, 0, 0, 0.3)',
-  
+
   // Status
   success: '#28a745',
   warning: '#ffc107',
   error: '#dc3545',
   info: '#17a2b8',
-  
+
   // Utility
   transparent: 'transparent',
   black: '#000000',
   white: '#ffffff',
-  
+
   // Gold theme for coins/rewards (matches existing assets)
   gold: '#FFD700',
   goldDark: '#866a1eff',
@@ -60,7 +66,7 @@ export const TYPOGRAPHY = {
     color: COLORS.primary,
     letterSpacing: 0.5,
   },
-  
+
   // Section titles (medium, semibold)
   sectionTitle: {
     fontSize: 18,
@@ -68,7 +74,7 @@ export const TYPOGRAPHY = {
     color: COLORS.textPrimary,
     letterSpacing: 0.3,
   },
-  
+
   // Body text (normal)
   body: {
     fontSize: 14,
@@ -76,21 +82,21 @@ export const TYPOGRAPHY = {
     color: COLORS.textSecondary,
     lineHeight: 20,
   },
-  
+
   // Small text
   small: {
     fontSize: 12,
     fontWeight: '400' as const,
     color: COLORS.textMuted,
   },
-  
+
   // Button text
   button: {
     fontSize: 16,
     fontWeight: 'bold' as const,
     color: COLORS.white,
   },
-  
+
   // Caption
   caption: {
     fontSize: 10,
@@ -174,7 +180,7 @@ export const BUTTON_STYLES = {
     justifyContent: 'center' as const,
     ...SHADOWS.glow,
   },
-  
+
   // Secondary button - Dark with subtle border
   secondary: {
     backgroundColor: COLORS.cardBackground,
@@ -186,7 +192,7 @@ export const BUTTON_STYLES = {
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
   },
-  
+
   // Accent button - Purple for special actions
   accent: {
     backgroundColor: COLORS.accent,
@@ -211,7 +217,7 @@ export const CARD_STYLES = {
     padding: SPACING.md,
     ...SHADOWS.small,
   },
-  
+
   // Card with border
   bordered: {
     backgroundColor: COLORS.cardBackground,
@@ -220,7 +226,7 @@ export const CARD_STYLES = {
     borderWidth: 1,
     borderColor: COLORS.borderLight,
   },
-  
+
   // Highlighted card
   highlighted: {
     backgroundColor: COLORS.cardBackground,
@@ -242,17 +248,17 @@ export const ANIMATIONS = {
     scale: 0.95,
     duration: 100,
   },
-  
+
   // Fade in
   fadeIn: {
     duration: 300,
   },
-  
+
   // Slide in
   slideIn: {
     duration: 250,
   },
-  
+
   // Bounce
   bounce: {
     tension: 40,
@@ -290,6 +296,17 @@ export const createTextShadow = () => ({
   textShadowColor: 'rgba(0, 0, 0, 0.3)',
   textShadowOffset: { width: 0, height: 2 },
   textShadowRadius: 4,
+});
+
+/**
+ * Creates sci-fi blue glow for inputs and borders
+ */
+export const createSciFiGlow = () => ({
+  shadowColor: '#00d2ff',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.8,
+  shadowRadius: 8,
+  elevation: 5,
 });
 
 export default {

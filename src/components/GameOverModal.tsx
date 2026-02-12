@@ -44,7 +44,7 @@ export default function GameOverModal({
         <View style={styles.modalContainer}>
           {/* Title */}
           <Text style={styles.title}>
-            {isWin ? '🎉 Level Complete! 🎉' : 'Game Over'}
+            {isWin ? '🎉 Level Complete!' : 'Game Over'}
           </Text>
 
           {/* Score Display */}

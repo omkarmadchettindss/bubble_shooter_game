@@ -98,7 +98,7 @@ export default function Shooter({ onPositionChange, shouldFlyAway, onFlyAwayComp
       shootIntervalRef.current = setInterval(() => {
         console.log('Shooting!');
         onShoot();
-      }, 300); // Shoot every 300ms
+      }, 150); // Shoot every 150ms (increased frequency)
 
       return () => {
         console.log('Clearing shoot interval');
@@ -125,7 +125,7 @@ export default function Shooter({ onPositionChange, shouldFlyAway, onFlyAwayComp
       // Animate spaceship flying upward out of screen
       Animated.timing(translateY, {
         toValue: -height,
-        duration: 2000,
+        duration: 500,
         useNativeDriver: false, // Set to false to allow JS-based animations
       }).start(() => {
         onFlyAwayComplete();

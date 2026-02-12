@@ -113,12 +113,12 @@ export const styles = StyleSheet.create({
   levelNumber: {
     fontSize: RFValue(18),
     fontWeight: 'bold',
-    color: '#201f1fae',
+    color: '#efebebe2',
   },
   hardLevelText: {
-    fontSize: RFValue(10),
+    fontSize: RFValue(18),
     fontWeight: 'bold',
-    color: '#201f1fae',
+    color: '#efebebe2',
     textAlign: 'center',
     lineHeight: RFValue(12),
   },

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Image } from 'react-native';
+import LottieView from 'lottie-react-native';
 import { IMAGE_URL } from '../constants/image';
+import ExplosionAnimation from '../assets/Explosion.json';
 
 const { width, height } = Dimensions.get('window');
 
@@ -16,10 +18,22 @@ interface Insect {
 
 interface Projectile {
   id: number;
-  x: Animated.Value;
+  x: number; // Fixed X position for straight line
   y: Animated.Value;
-  startX: number;
-  startY: number;
+  opacity: Animated.Value;
+}
+
+interface ProjectileTrail {
+  id: number;
+  x: number;
+  y: number;
+  opacity: Animated.Value;
+}
+
+interface Explosion {
+  id: number;
+  x: number;
+  y: number;
 }
 
 interface InsectGameProps {
@@ -42,30 +56,27 @@ export default function InsectGame({
   const insectsRef = useRef<Insect[]>([]);
   const [insects, setInsects] = useState<Insect[]>([]);
   const [projectiles, setProjectiles] = useState<Projectile[]>([]);
+  const [projectileTrails, setProjectileTrails] = useState<ProjectileTrail[]>([]);
+  const [explosions, setExplosions] = useState<Explosion[]>([]);
   const [score, setScore] = useState(0);
   const projectileIdCounter = useRef(0);
+  const trailIdCounter = useRef(0);
+  const explosionIdCounter = useRef(0);
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const gameAreaHeight = height * 0.75;
 
   useEffect(() => {
     if (!showInsects) return;
 
-    // Create 20 insects (4 rows x 5 columns)
+    // Create insects that will roam freely
     const insectTypes = Object.keys(IMAGE_URL.INSECTS) as Array<keyof typeof IMAGE_URL.INSECTS>;
-    const rows = 4;
-    const cols = 5;
-    const insectSpacing = 85; // Increased spacing between insects
-    const startX = (width - (cols - 1) * insectSpacing) / 2;
-    const startY = 80;
 
     const newInsects: Insect[] = Array.from({ length: maxScore }, (_, i) => {
       const randomType = insectTypes[Math.floor(Math.random() * insectTypes.length)];
-      const row = Math.floor(i / cols);
-      const col = i % cols;
       
-      // Calculate final grid position
-      const finalX = startX + col * insectSpacing;
-      const finalY = startY + row * insectSpacing;
+      // Random final position in top 75% area
+      const finalX = Math.random() * (width - 100) + 50;
+      const finalY = Math.random() * (gameAreaHeight - 150) + 80;
       
       // Start position: alternate from left and right sides
       const startFromLeft = i % 2 === 0;
@@ -87,7 +98,7 @@ export default function InsectGame({
     setInsects(newInsects);
 
     // Start intro animation sequence
-    startIntroAnimation(newInsects, startX, startY, rows, cols, insectSpacing);
+    startIntroAnimation(newInsects);
 
     return () => {
       insectsRef.current.forEach((insect) => {
@@ -98,46 +109,39 @@ export default function InsectGame({
     };
   }, [showInsects]);
 
-  const startIntroAnimation = (
-    insects: Insect[], 
-    startX: number, 
-    startY: number, 
-    _rows: number, 
-    cols: number, 
-    _spacing: number
-  ) => {
-    // Phase 1: Insects fly in from sides (5 seconds)
+  const startIntroAnimation = (insects: Insect[]) => {
+    // Insects fly in from sides and immediately start roaming
     insects.forEach((insect, i) => {
-      const row = Math.floor(i / cols);
-      const col = i % cols;
-      const finalX = startX + col * 85; // Increased spacing
-      const finalY = startY + row * 85; // Increased spacing
+      // Random final position in top 75% area
+      const finalX = Math.random() * (width - 100) + 50;
+      const finalY = Math.random() * (gameAreaHeight - 150) + 80;
       
       // Stagger the animation slightly for each insect
-      const delay = i * 100;
+      const delay = i * 80;
       
       setTimeout(() => {
         Animated.parallel([
           Animated.timing(insect.x, {
             toValue: finalX,
-            duration: 1500,
-            useNativeDriver: false,
+            duration: 1200,
+            useNativeDriver: true,
           }),
           Animated.timing(insect.rotation, {
             toValue: 360,
-            duration: 1500,
-            useNativeDriver: false,
+            duration: 1200,
+            useNativeDriver: true,
           }),
         ]).start(() => {
-          // After 5 seconds total, check if this is the last insect
-          if (i === insects.length - 1) {
-            setTimeout(() => {
-              setIsIntroComplete(true);
-              // Start continuous movement for all insects
-              insects.forEach(insect => animateInsect(insect));
-            }, 3500 - delay); // Adjust to make total 5 seconds
-          }
+          // Immediately start roaming without pause
+          animateInsect(insect);
         });
+        
+        // Enable shooting after the last insect starts its intro animation
+        if (i === insects.length - 1) {
+          setTimeout(() => {
+            setIsIntroComplete(true);
+          }, 1200); // Enable shooting when last insect arrives
+        }
       }, delay);
     });
   };
@@ -154,17 +158,17 @@ export default function InsectGame({
       Animated.timing(insect.x, {
         toValue: newX,
         duration: duration,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(insect.y, {
         toValue: newY,
         duration: duration,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(insect.rotation, {
         toValue: newRotation,
         duration: duration,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
     ]).start(() => {
       if (insect.isAlive) {
@@ -192,47 +196,81 @@ export default function InsectGame({
     
     const newProjectile: Projectile = {
       id: projectileId,
-      x: new Animated.Value(startX),
+      x: startX, // Fixed X position for straight line
       y: new Animated.Value(startY),
-      startX: startX,
-      startY: startY,
+      opacity: new Animated.Value(1),
     };
 
     setProjectiles((prev) => [...prev, newProjectile]);
 
-    const speed = 1000; // pixels per second
+    const speed = 1200; // pixels per second (faster for smoother feel)
     const distance = startY + 100; // Distance to top of screen
     const duration = (distance / speed) * 1000;
 
     console.log('Projectile created:', { id: projectileId, startX, startY, duration });
 
-    // Animate projectile straight up
+    // Create trail effect - spawn trail particles periodically
+    const trailInterval = setInterval(() => {
+      const currentY = (newProjectile.y as any)._value;
+      if (currentY < -50) {
+        clearInterval(trailInterval);
+        return;
+      }
+      
+      const trailId = trailIdCounter.current++;
+      const trailOpacity = new Animated.Value(0.8);
+      
+      const newTrail: ProjectileTrail = {
+        id: trailId,
+        x: startX,
+        y: currentY,
+        opacity: trailOpacity,
+      };
+      
+      setProjectileTrails((prev) => [...prev, newTrail]);
+      
+      // Fade out trail
+      Animated.timing(trailOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        setProjectileTrails((prev) => prev.filter((t) => t.id !== trailId));
+      });
+    }, 30);
+
+    // Animate projectile straight up with native driver for smooth performance
     Animated.timing(newProjectile.y, {
       toValue: -100,
       duration: duration,
-      useNativeDriver: false,
+      useNativeDriver: true, // Enable native driver for smooth animation
     }).start(() => {
+      clearInterval(trailInterval);
       // Remove projectile after reaching top
       console.log('Projectile reached top:', projectileId);
       setProjectiles((prev) => prev.filter((p) => p.id !== projectileId));
     });
 
-    // Check for collisions during flight
-    checkCollisionsDuringFlight(newProjectile, duration, startX);
+    // Check for collisions during flight - calculate positions based on time
+    checkCollisionsDuringFlight(projectileId, duration, startX, startY);
   };
 
-  const checkCollisionsDuringFlight = (projectile: Projectile, duration: number, bulletX: number) => {
+  const checkCollisionsDuringFlight = (projectileId: number, duration: number, bulletX: number, startY: number) => {
     // Check for collisions every 30ms during flight
     const checkInterval = 30;
     const checks = Math.floor(duration / checkInterval);
     
     let hasHit = false;
+    const speed = 1200; // Same as shooting speed
     
     for (let i = 0; i < checks; i++) {
       setTimeout(() => {
         if (hasHit) return; // Stop checking if already hit something
         
-        const currentY = (projectile.y as any)._value;
+        // Calculate bullet Y position based on elapsed time (since we can't read animated value with native driver)
+        const elapsedTime = i * checkInterval;
+        const distanceTraveled = (speed * elapsedTime) / 1000;
+        const currentY = startY - distanceTraveled;
         
         // Check if projectile hits any insect
         insectsRef.current.forEach((insect) => {
@@ -251,7 +289,7 @@ export default function InsectGame({
             Math.pow(currentY - insectCenterY, 2)
           );
           
-          // Collision detection with more generous hitbox (60 pixels radius)
+          // Collision detection with generous hitbox (60 pixels radius)
           if (distance < 60) {
             console.log('Collision detected!', {
               insectId: insect.id,
@@ -264,7 +302,7 @@ export default function InsectGame({
             killInsect(insect.id);
             
             // Remove projectile
-            setProjectiles((prev) => prev.filter((p) => p.id !== projectile.id));
+            setProjectiles((prev) => prev.filter((p) => p.id !== projectileId));
           }
         });
       }, i * checkInterval);
@@ -277,32 +315,51 @@ export default function InsectGame({
 
     console.log('Killing insect:', insectId);
 
-    // Mark insect as dead
+    // Mark insect as dead immediately to prevent duplicate kills
     insect.isAlive = false;
+
+    // Get insect position for explosion
+    const insectX = (insect.x as any)._value;
+    const insectY = (insect.y as any)._value;
+
+    // Create explosion at insect position
+    const explosionId = explosionIdCounter.current++;
+    const newExplosion: Explosion = {
+      id: explosionId,
+      x: insectX + 40, // Center of insect
+      y: insectY + 40,
+    };
+    setExplosions((prev) => [...prev, newExplosion]);
+
+    // Remove explosion after animation completes (approx 667ms for 20 frames at 30fps)
+    setTimeout(() => {
+      setExplosions((prev) => prev.filter((e) => e.id !== explosionId));
+    }, 700);
 
     // Animate insect disappearing
     Animated.parallel([
       Animated.timing(insect.scale, {
         toValue: 0,
         duration: 300,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
       Animated.timing(insect.rotation, {
         toValue: (insect.rotation as any)._value + 360,
         duration: 300,
-        useNativeDriver: false,
+        useNativeDriver: true,
       }),
     ]).start(() => {
       // Update state to remove insect from view
       setInsects((prev) => prev.filter((i) => i.id !== insectId));
     });
 
-    // Update score
-    const newScore = score + 1;
-    setScore(newScore);
-    onScoreChange(newScore);
-    
-    console.log('Score updated:', newScore);
+    // Update score using functional update to avoid stale closure issues
+    setScore((prevScore) => {
+      const newScore = prevScore + 1;
+      console.log('Score updated:', newScore);
+      onScoreChange(newScore);
+      return newScore;
+    });
   };
 
   return (
@@ -340,6 +397,48 @@ export default function InsectGame({
         })}
       </View>
 
+      {/* Explosions */}
+      <View style={styles.explosionsContainer} pointerEvents="none">
+        {explosions.map((explosion) => (
+          <View
+            key={explosion.id}
+            style={[
+              styles.explosionContainer,
+              {
+                left: explosion.x - 60, // Center the explosion (120/2)
+                top: explosion.y - 60,
+              },
+            ]}
+          >
+            <LottieView
+              source={ExplosionAnimation}
+              autoPlay
+              loop={false}
+              style={styles.explosionAnimation}
+            />
+          </View>
+        ))}
+      </View>
+
+      {/* Projectile Trails */}
+      <View style={styles.projectilesContainer} pointerEvents="none">
+        {projectileTrails.map((trail) => (
+          <Animated.View
+            key={trail.id}
+            style={[
+              styles.trailParticle,
+              {
+                left: trail.x - 15,
+                top: trail.y - 15,
+                opacity: trail.opacity,
+              },
+            ]}
+          >
+            <View style={styles.trailGlow} />
+          </Animated.View>
+        ))}
+      </View>
+
       {/* Projectiles */}
       <View style={styles.projectilesContainer} pointerEvents="none">
         {projectiles.map((projectile) => (
@@ -348,15 +447,18 @@ export default function InsectGame({
             style={[
               styles.projectile,
               {
+                left: projectile.x - 20,
+                opacity: projectile.opacity,
                 transform: [
-                  { translateX: projectile.x },
                   { translateY: projectile.y },
                 ],
               },
             ]}
           >
-            <View style={styles.projectileDot}>
-              <View style={styles.projectileInner} />
+            <View style={styles.projectileGlowOuter}>
+              <View style={styles.projectileGlowMiddle}>
+                <View style={styles.projectileCore} />
+              </View>
             </View>
           </Animated.View>
         ))}
@@ -369,7 +471,7 @@ const styles = StyleSheet.create({
   gameArea: {
     position: 'absolute',
     top: 0,
-    left: 0,
+    left: -40,
     right: 0,
     bottom: 0,
     width: width,
@@ -386,6 +488,26 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
+  explosionsContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: width,
+    height: height,
+    pointerEvents: 'none',
+    zIndex: 200,
+  },
+  explosionContainer: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+  },
+  explosionAnimation: {
+    width: 120,
+    height: 120,
+  },
   projectilesContainer: {
     position: 'absolute',
     top: 0,
@@ -399,29 +521,59 @@ const styles = StyleSheet.create({
   },
   projectile: {
     position: 'absolute',
-    width: 20,
-    height: 20,
-    marginLeft: -10,
-    marginTop: -10,
+    width: 40,
+    height: 40,
     zIndex: 100,
   },
-  projectileDot: {
-    width: 20,
-    height: 20,
-    borderRadius: 30,
-    // backgroundColor: '#FFD700',
-    borderWidth: 3,
+  projectileGlowOuter: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 100, 0, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
-    // shadowColor: '#FFD700',
-    // shadowOffset: { width: 0, height: 0 },
-    // shadowOpacity: 0.8,
-    // shadowRadius: 4,
+    shadowColor: '#FF6400',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 15,
+    elevation: 10,
   },
-  projectileInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#FFF',
+  projectileGlowMiddle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 140, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#FF8C00',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+  },
+  projectileCore: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+  },
+  trailParticle: {
+    position: 'absolute',
+    width: 30,
+    height: 30,
+    zIndex: 99,
+  },
+  trailGlow: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: 'rgba(255, 100, 0, 0.4)',
+    shadowColor: '#FF6400',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
 });

@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
   Image,
+  ImageBackground,
 } from 'react-native';
 
 import { RFValue } from 'react-native-responsive-fontsize';
@@ -34,9 +35,13 @@ export default function BottomTabs({ userWallet, userReferralCode, onLogout }: B
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          height: hp(8),
+          height: hp(15),
+          width: wp(100),
+          top: wp(190),
+          opacity: 0.8,
           paddingBottom: SPACING.md,
-          backgroundColor: COLORS.backgroundDark,
+          paddingHorizontal: SPACING.sm,
+          backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
@@ -47,6 +52,17 @@ export default function BottomTabs({ userWallet, userReferralCode, onLogout }: B
           right: SPACING.xs,
           bottom: SPACING.md,
         },
+        tabBarItemStyle: {
+          paddingHorizontal: 0,
+          marginHorizontal: -SPACING.sm,
+        },
+        tabBarBackground: () => (
+          <ImageBackground
+            source={{ uri: IMAGE_URL.TAB_BG }}
+            style={styles.tabBarBackground}
+            resizeMode="stretch"
+          />
+        ),
         tabBarLabelStyle: {
           fontSize: RFValue(11),
         },
@@ -109,10 +125,15 @@ export default function BottomTabs({ userWallet, userReferralCode, onLogout }: B
 }
 
 const styles = StyleSheet.create({
+  tabBarBackground: {
+    flex: 1,
+    borderRadius: RADIUS.lg + 25,
+    overflow: 'hidden',
+  },
   tabIcon: {
-    width: wp(25),
-    height: hp(5.5),
-    top: wp(5)
+    width: wp(20),
+    height: hp(5),
+    top: wp(12)
   },
   placeholderIcon: {
     width: wp(8),

@@ -1,5 +1,8 @@
 export const IMAGE_URL = {
   BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770113053/Bubble%20Shooting%20Game/lqc18zeeswlnvhb4xv77.webp',
+  LOGIN_BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770876704/Bubble%20Shooting%20Game/rdvpdxeceqb8ygelmnsf.webp',
+  LOGIN_FRAME: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770875462/Bubble%20Shooting%20Game/ux0tiqianl7tjrdsb3aq.webp',
+  TAB_BG: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770881252/Bubble%20Shooting%20Game/zkijtrkxuirpmhd4qz0j.webp',
   HOME_BUTTON:
     'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770110581/Bubble%20Shooting%20Game/odwojsmhwsdnkkqbo09w.webp',
   LEADRBOARD_BUTTON:
@@ -50,6 +53,11 @@ export const IMAGE_URL = {
     PURPLE_INSECT: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808137/Bubble%20Shooting%20Game/k1h0jafocgzd6oynywep.webp',
     GREEN_INSECT: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808084/Bubble%20Shooting%20Game/wiklb9tuhq8tcfgefudt.webp'
   },
+  RED_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770889236/Bubble%20Shooting%20Game/tekqlqzcmvcb1p7tbnfd.webp',
+  ORANGE_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770889263/Bubble%20Shooting%20Game/o4wtn6qaskgel2ltannb.webp',
+  BLUE_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770889295/Bubble%20Shooting%20Game/tptvtyfmiau6ulwbe7yo.webp',
+  GREEN_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770889250/Bubble%20Shooting%20Game/gipngy4cfg7ytpy3b6fe.webp',
+  PURPLE_BUTTON: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770889277/Bubble%20Shooting%20Game/bnlytieogzzjkzxbnvlq.webp'
 };
 
 // Helper function to get background based on level ranges (every 5 levels)
@@ -57,15 +65,15 @@ export const getLevelBackground = (levelNumber: number): string => {
   // Calculate which background to use based on level ranges
   // Levels 1-5: LEVEL1, 6-10: LEVEL2, 11-15: LEVEL3, etc.
   const backgroundIndex = Math.floor((levelNumber - 1) / 5) + 1;
-  
+
   // Map to available backgrounds
   const backgroundKey = `LEVEL${backgroundIndex}` as keyof typeof IMAGE_URL.LEVEL_BG;
-  
+
   // If the specific background exists, use it; otherwise cycle through available ones
   if (IMAGE_URL.LEVEL_BG[backgroundKey]) {
     return IMAGE_URL.LEVEL_BG[backgroundKey];
   }
-  
+
   // If we run out of backgrounds, cycle back through them
   const backgrounds = Object.values(IMAGE_URL.LEVEL_BG);
   const cycleIndex = (backgroundIndex - 1) % backgrounds.length;
