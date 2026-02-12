@@ -42,20 +42,32 @@ export const IMAGE_URL = {
     LEVEL7: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770793229/Bubble%20Shooting%20Game/pd2o32yacp2mmhxscayg.webp',
     LEVEL8: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770793246/Bubble%20Shooting%20Game/sphrak06dxnwaczxdzut.webp'
   },
-  
+  SPACESHIP: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770804596/Bubble%20Shooting%20Game/heovyssw5h6hrstqcurt.webp',
+  METEOR: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808224/Bubble%20Shooting%20Game/auzzm3rskjlnuym69tdu.webp',
+  INSECTS: {
+    BLUE_INSECT: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808101/Bubble%20Shooting%20Game/fktvdsupegciwni43yzb.webp',
+    RED_INSECT: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808118/Bubble%20Shooting%20Game/jzgl7a0hvl2wqqx58d2o.webp',
+    PURPLE_INSECT: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808137/Bubble%20Shooting%20Game/k1h0jafocgzd6oynywep.webp',
+    GREEN_INSECT: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770808084/Bubble%20Shooting%20Game/wiklb9tuhq8tcfgefudt.webp'
+  },
 };
 
-// Helper function to get unique background for each level
+// Helper function to get background based on level ranges (every 5 levels)
 export const getLevelBackground = (levelNumber: number): string => {
+  // Calculate which background to use based on level ranges
+  // Levels 1-5: LEVEL1, 6-10: LEVEL2, 11-15: LEVEL3, etc.
+  const backgroundIndex = Math.floor((levelNumber - 1) / 5) + 1;
+  
+  // Map to available backgrounds
+  const backgroundKey = `LEVEL${backgroundIndex}` as keyof typeof IMAGE_URL.LEVEL_BG;
+  
+  // If the specific background exists, use it; otherwise cycle through available ones
+  if (IMAGE_URL.LEVEL_BG[backgroundKey]) {
+    return IMAGE_URL.LEVEL_BG[backgroundKey];
+  }
+  
+  // If we run out of backgrounds, cycle back through them
   const backgrounds = Object.values(IMAGE_URL.LEVEL_BG);
-  const totalBackgrounds = backgrounds.length;
-  
-  // Create a shuffled sequence that doesn't repeat until all backgrounds are used
-  const cyclePosition = Math.floor((levelNumber - 1) / totalBackgrounds);
-  const indexInCycle = (levelNumber - 1) % totalBackgrounds;
-  
-  // Use a deterministic shuffle based on cycle to ensure consistency
-  const shuffledIndex = (indexInCycle + cyclePosition * 3) % totalBackgrounds;
-  
-  return backgrounds[shuffledIndex];
+  const cycleIndex = (backgroundIndex - 1) % backgrounds.length;
+  return backgrounds[cycleIndex];
 };
