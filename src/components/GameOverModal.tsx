@@ -20,7 +20,7 @@ interface GameOverModalProps {
   visible: boolean;
   score: number;
   maxScore: number;
-  onReplay: () => void;
+  onNext: () => void;
   onExit: () => void;
 }
 
@@ -28,10 +28,11 @@ export default function GameOverModal({
   visible,
   score,
   maxScore,
-  onReplay,
+  onNext,
   onExit,
 }: GameOverModalProps) {
   const isWin = score >= maxScore;
+  const progressPercentage = (score / maxScore) * 100;
 
   return (
     <Modal
@@ -53,6 +54,19 @@ export default function GameOverModal({
             <Text style={styles.scoreValue}>
               {score} / {maxScore}
             </Text>
+            
+            {/* Progress Bar */}
+            <View style={styles.progressBarContainer}>
+              <View style={styles.progressBarBackground}>
+                <View 
+                  style={[
+                    styles.progressBarFill, 
+                    { width: `${progressPercentage}%` }
+                  ]} 
+                />
+              </View>
+              <Text style={styles.progressPercentage}>{Math.round(progressPercentage)}%</Text>
+            </View>
           </View>
 
           {/* Message */}
@@ -65,19 +79,19 @@ export default function GameOverModal({
           {/* Buttons */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={[styles.button, styles.replayButton]}
-              onPress={onReplay}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.buttonText}>Play Again</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
               style={[styles.button, styles.exitButton]}
               onPress={onExit}
               activeOpacity={0.8}
             >
               <Text style={styles.buttonText}>Exit</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, styles.nextButton]}
+              onPress={onNext}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>Next</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -129,6 +143,29 @@ const styles = StyleSheet.create({
     fontSize: RFValue(32),
     fontWeight: 'bold',
     color: COLORS.primary,
+    marginBottom: hp(1.5),
+  },
+  progressBarContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  progressBarBackground: {
+    width: '100%',
+    height: hp(1.5),
+    backgroundColor: 'rgba(123, 104, 238, 0.2)',
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: hp(0.5),
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+  },
+  progressPercentage: {
+    fontSize: RFValue(12),
+    color: COLORS.primary,
+    fontWeight: '600',
   },
   message: {
     fontSize: RFValue(14),
@@ -149,11 +186,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  replayButton: {
-    backgroundColor: COLORS.primary,
-  },
   exitButton: {
     backgroundColor: COLORS.textSecondary,
+  },
+  nextButton: {
+    backgroundColor: COLORS.primary,
   },
   buttonText: {
     fontSize: RFValue(14),

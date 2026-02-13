@@ -192,7 +192,8 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   playButtonImage: {
-    width: wp(50),
-    height: wp(30),
+    right: wp(3),
+    width: wp(55),
+    height: wp(35),
   },
 });

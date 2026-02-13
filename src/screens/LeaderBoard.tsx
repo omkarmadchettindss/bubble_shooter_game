@@ -211,13 +211,16 @@ export default function LeaderBoard() {
 
         {/* Leaderboard Frame with Rankings 4+ - Animated */}
         <Animated.View
-          style={{
-            transform: [{ translateY: frameSlideUpAnim }],
-            opacity: frameSlideUpAnim.interpolate({
-              inputRange: [0, 200],
-              outputRange: [1, 0],
-            }),
-          }}
+          style={[
+            styles.leaderboardFrameContainer,
+            {
+              transform: [{ translateY: frameSlideUpAnim }],
+              opacity: frameSlideUpAnim.interpolate({
+                inputRange: [0, 200],
+                outputRange: [1, 0],
+              }),
+            }
+          ]}
         >
           <ImageBackground 
             source={{ uri: IMAGE_URL.LEADERBOARD_FRAME_BG }}
@@ -237,7 +240,6 @@ export default function LeaderBoard() {
               renderItem={renderLeaderboardItem}
               keyExtractor={(item) => item.id}
               showsVerticalScrollIndicator={false}
-              nestedScrollEnabled={true}
               style={styles.scrollableList}
               contentContainerStyle={styles.listContainer}
             />

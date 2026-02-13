@@ -79,18 +79,24 @@ export const styles = StyleSheet.create({
     color: COLORS.gold,
   },
 
-  // Leaderboard Frame
-  leaderboardFrame: {
+  // Leaderboard Frame Container - FIXED
+  leaderboardFrameContainer: {
+    flex: 1,
     marginHorizontal: SPACING.md,
-    marginTop: SPACING.md,
+    bottom: hp(8),
+    right: wp(6),
+    height: hp(110),
+    width: wp(100)
+  },
+
+  // Leaderboard Frame - FIXED
+  leaderboardFrame: {
+    flex: 1,
     paddingTop: SPACING.md,
     paddingBottom: SPACING.lg,
     paddingHorizontal: SPACING.sm,
-    right: wp(9),
-    width: wp(105),
-    height: hp(80),              // Keep your height
-    bottom: hp(12),
-    minHeight: hp(40),
+    overflow: 'hidden', // Important: keeps content within bounds
+    height: hp(75)
   },
 
   // Header Row
@@ -100,70 +106,71 @@ export const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     alignItems: 'center',
     justifyContent: 'space-between',
-    top: hp(10.5),
-    // top: hp(20)
-    marginBottom: SPACING.xs,
+    top: hp(7.6)
   },
   headerTextName: {
     fontSize: RFValue(11),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
+    color: COLORS.white,
     textAlign: 'center',
     flex: 1,
   },
   headerTextRank: {
     fontSize: RFValue(11),
-    left: wp(5),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
+    color: COLORS.white,
     textAlign: 'center',
     flex: 1,
+    left: wp(5)
   },
   headerTextPoints: {
     fontSize: RFValue(11),
-    right: wp(5),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
+    color: COLORS.white,
     textAlign: 'center',
     flex: 1,
+    right: wp(5)
   },
 
-  // Leaderboard List
+  // Leaderboard List - FIXED SPACING
+  scrollableList: {
+    flex: 1,
+    top: hp(7.2),
+    bottom: hp(9),
+    maxHeight: hp(43),
+  },
   listContainer: {
-    paddingHorizontal: SPACING.lg + 8,
-    bottom: 25,
     // backgroundColor: '#eee',
-    borderRadius: wp(10),
+    paddingHorizontal: SPACING.sm,
+    paddingBottom: SPACING.lg,
   },
   leaderboardRowBg: {
-    marginBottom: -hp(4.5),    // Fixed: was negative value
     overflow: 'hidden',
-    height: hp(12),
+    height: hp(25), // Reduced from hp(25) for proper sizing
+    width: wp(80),
+    left: wp(6.7),
+    top: hp(10),
+    marginTop: -wp(42)
   },
   leaderboardRow: {
     flexDirection: 'row',
-    paddingVertical: SPACING.sm,
+    paddingVertical: hp(1.5),
     paddingHorizontal: SPACING.md,
     alignItems: 'center',
     justifyContent: 'space-between',
-    bottom: -31,
-  },
-  scrollableList: {
-    maxHeight: hp(60),
-    marginTop: hp(11),
-    marginBottom: hp(11),
+    height: '100%',
   },
   tableCell: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    top: wp(2.5),
+    bottom: wp(0.5)
   },
   rankText: {
     fontSize: RFValue(10),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
+    color: COLORS.white,
     textAlign: 'center',
   },
   rankTextTop: {
@@ -172,7 +179,7 @@ export const styles = StyleSheet.create({
   playerName: {
     fontSize: RFValue(9),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
+    color: COLORS.white,
     textAlign: 'center',
   },
   coinText: {

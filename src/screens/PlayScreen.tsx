@@ -13,28 +13,56 @@ export default function PlayScreen() {
   const levelNumber = (route.params as any)?.levelNumber || 1;
   const levelBg = getLevelBackground(levelNumber);
   
+  // Calculate max insects based on level: Level 1 = 20, Level 2 = 25, Level 3 = 30, etc.
+  const maxProgress = 15 + (levelNumber * 5);
+  
   const [currentProgress, setCurrentProgress] = useState(0);
   const [shooterPosition, setShooterPosition] = useState({ x: 0, y: 0 });
   const [shouldFlyAway, setShouldFlyAway] = useState(false);
   const [showGameOver, setShowGameOver] = useState(false);
   const [showInsects, setShowInsects] = useState(false);
   const [shootTrigger, setShootTrigger] = useState(0);
-  const maxProgress = 20;
+  const [currentWave, setCurrentWave] = useState(1);
+  const [waveKey, setWaveKey] = useState(0); // Key to force re-render of InsectGame
+  
   const progressPercentage = (currentProgress / maxProgress) * 100;
+  
+  // Wave system: Show 20 insects at a time
+  const insectsPerWave = 20;
+  const totalWaves = Math.ceil(maxProgress / insectsPerWave);
+  const currentWaveInsects = Math.min(insectsPerWave, maxProgress - (currentWave - 1) * insectsPerWave);
+  const previousWavesTotal = (currentWave - 1) * insectsPerWave;
 
-  // Check if this is an insect level (levels 1-5)
-  const isInsectLevel = levelNumber >= 1 && levelNumber <= 5;
+  // Check if this is an insect level (levels 1-100)
+  const isInsectLevel = levelNumber >= 1 && levelNumber <= 100;
 
   const handleBackPress = () => {
     navigation.goBack();
   };
 
   const handleScoreChange = (newScore: number) => {
-    setCurrentProgress(newScore);
+    const totalScore = previousWavesTotal + newScore;
+    setCurrentProgress(totalScore);
     
-    // Check if game is complete
-    if (newScore >= maxProgress) {
-      setShouldFlyAway(true);
+    // Check if current wave is complete
+    if (newScore >= currentWaveInsects) {
+      // Check if there are more waves
+      if (currentWave < totalWaves) {
+        // Start next wave after a short delay
+        setTimeout(() => {
+          setCurrentWave(prev => prev + 1);
+          setShowInsects(false);
+          setWaveKey(prev => prev + 1); // Force re-render
+          
+          // Show new wave after brief pause
+          setTimeout(() => {
+            setShowInsects(true);
+          }, 500);
+        }, 1000);
+      } else {
+        // All waves complete - game over
+        setShouldFlyAway(true);
+      }
     }
   };
 
@@ -61,15 +89,20 @@ export default function PlayScreen() {
   };
 
   const handleReplay = () => {
+    // Navigate to next level
+    const nextLevel = levelNumber + 1;
     setShowGameOver(false);
     setCurrentProgress(0);
     setShouldFlyAway(false);
     setShowInsects(false);
     setShootTrigger(0);
-    // Force re-render by navigating back and forth
+    setCurrentWave(1);
+    setWaveKey(0);
+    
+    // Navigate to next level
     navigation.goBack();
     setTimeout(() => {
-      (navigation.navigate as any)('Play', { levelNumber });
+      (navigation.navigate as any)('Play', { levelNumber: nextLevel });
     }, 100);
   };
 
@@ -88,6 +121,11 @@ export default function PlayScreen() {
           <Text style={styles.progressText}>
             {currentProgress} / {maxProgress}
           </Text>
+          {totalWaves > 1 && (
+            <Text style={styles.waveText}>
+              Wave {currentWave} / {totalWaves}
+            </Text>
+          )}
         </View>
 
         {/* Back button */}
@@ -102,10 +140,11 @@ export default function PlayScreen() {
         {/* Game Content */}
         {isInsectLevel ? (
           <>
-            {/* Insect Game for levels 1-5 */}
+            {/* Insect Game for levels 1-100 */}
             <InsectGame 
+              key={waveKey}
               onScoreChange={handleScoreChange} 
-              maxScore={maxProgress}
+              maxScore={currentWaveInsects}
               shooterPosition={shooterPosition}
               showInsects={showInsects}
               shootTrigger={shootTrigger}
@@ -132,7 +171,7 @@ export default function PlayScreen() {
           visible={showGameOver}
           score={currentProgress}
           maxScore={maxProgress}
-          onReplay={handleReplay}
+          onNext={handleReplay}
           onExit={handleExit}
         />
       </View>

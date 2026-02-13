@@ -20,8 +20,8 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: RFValue(17),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
-    bottom: wp(69),
+    color: COLORS.white,
+    bottom: wp(75),
     // ...createTextShadow(),
   },
   markAllButton: {
@@ -44,15 +44,15 @@ export const styles = StyleSheet.create({
   },
   notificationImage: {
     position: 'absolute',
-    width: wp(120),
+    width: wp(110),
     height: hp(100),
   },
   notificationsWrapper: {
     position: 'absolute',
     width: wp(67.5),
-    height: hp(58.5),
-    borderRadius: RADIUS.md+8,
-    top: hp(10.50),
+    height: hp(46),
+    // borderRadius: RADIUS.md+8,
+    top: hp(10),
     left: wp(11.25),
     overflow: 'hidden',
   },
@@ -73,8 +73,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   unreadNotification: {
-    backgroundColor: 'rgba(255, 152, 0, 0.12)',
-    borderColor: COLORS.primary,
+    backgroundColor: 'rgba(0, 149, 255, 0.28)',
+    borderColor: 'rgba(0, 255, 255, 0.98)',
     borderWidth: 0.2,
   },
   notificationContent: {
@@ -83,12 +83,12 @@ export const styles = StyleSheet.create({
   notificationTitle: {
     fontSize: RFValue(11),
     fontWeight: 'bold',
-    color: COLORS.goldDark,
+    color: '#eeeeeecd',
     marginBottom: hp(0.3),
   },
   notificationMessage: {
     fontSize: RFValue(9),
-    color: COLORS.textSecondary,
+    color: '#bebebeff',
     marginBottom: hp(0.3),
     lineHeight: RFValue(13),
   },
@@ -98,10 +98,10 @@ export const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   unreadDot: {
-    width: wp(2.5),
-    height: wp(2.5),
+    width: wp(2),
+    height: wp(2),
     borderRadius: wp(1.25),
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#36eb45a2',
     marginLeft: SPACING.sm,
   },
 });

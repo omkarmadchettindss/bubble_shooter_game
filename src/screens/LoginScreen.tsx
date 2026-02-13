@@ -170,6 +170,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                 style={styles.loginFrame}
                 resizeMode="stretch"
               >
+                <Text style={styles.title}>Login</Text>
                 {/* Email Input */}
                 <Animated.View style={{ opacity: emailOpacity, transform: [{ translateY: emailAnim }] }}>
                   <View style={styles.inputContainer}>

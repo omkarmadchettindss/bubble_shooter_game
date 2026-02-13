@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, Image, ScrollView, Animated } from 'react-native';
-import { ChevronRight, Clock, Flame, GamepadIcon, MoreVertical, LogOut, Trash2 } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ImageBackground, Image, Animated } from 'react-native';
+import { MoreVertical, LogOut, Trash2 } from 'lucide-react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { IMAGE_URL } from '../constants/image';
 import { COLORS } from '../constants/colors';
 import { styles } from './styles/ProfileScreen.styles';
@@ -19,6 +20,63 @@ export default function ProfileScreen({ userWallet, userReferralCode, onLogout }
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const menuAnimation = useRef(new Animated.Value(0)).current;
+  const isFocused = useIsFocused();
+  
+  // Profile frame animations
+  const frameScale = useRef(new Animated.Value(0.8)).current;
+  const frameOpacity = useRef(new Animated.Value(0)).current;
+  const contentSlide = useRef(new Animated.Value(50)).current;
+  const glowPulse = useRef(new Animated.Value(0)).current;
+
+  // Animate profile frame whenever screen comes into focus
+  React.useEffect(() => {
+    if (isFocused) {
+      // Reset animations to initial state
+      frameScale.setValue(0.8);
+      frameOpacity.setValue(0);
+      contentSlide.setValue(50);
+      
+      // Start entrance animation
+      Animated.parallel([
+        Animated.spring(frameScale, {
+          toValue: 1,
+          tension: 50,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+        Animated.timing(frameOpacity, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.spring(contentSlide, {
+          toValue: 0,
+          tension: 50,
+          friction: 8,
+          delay: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+  }, [isFocused]);
+
+  // Continuous glow pulse animation
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(glowPulse, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(glowPulse, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
 
   const handleSettingsPress = () => {
     setShowSettingsModal(true);
@@ -63,7 +121,7 @@ export default function ProfileScreen({ userWallet, userReferralCode, onLogout }
 
   return (
     <ImageBackground source={{ uri: IMAGE_URL.BG }} style={styles.backgroundImage}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Profile</Text>
@@ -121,90 +179,101 @@ export default function ProfileScreen({ userWallet, userReferralCode, onLogout }
           </View>
         </View>
 
-        {/* Profile Avatar Section */}
+        {/* Profile Frame Only - Centered */}
         <View style={styles.profileSection}>
-          <View style={styles.avatarContainer}>
-            <Image 
-              source={{ uri: IMAGE_URL.PROFILE_IMG }}
-              style={styles.avatar}
+          <Animated.View 
+            style={[
+              styles.avatarContainer,
+              {
+                opacity: frameOpacity,
+                transform: [{ scale: frameScale }],
+              }
+            ]}
+          >
+            {/* Animated Glow Effect */}
+            <Animated.View
+              style={[
+                styles.glowEffect,
+                {
+                  opacity: glowPulse.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.3, 0.7],
+                  }),
+                  transform: [
+                    {
+                      scale: glowPulse.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1.05],
+                      }),
+                    },
+                  ],
+                },
+              ]}
             />
-            <View style={styles.editBadge}>
-              <Text style={styles.editIcon}>✏️</Text>
-            </View>
-          </View>
-          <Text style={styles.username}>Omkar</Text>
-        </View>
-
-        {/* Stats Cards */}
-        <View style={styles.statsContainer}>
-          <View style={[styles.statCard, styles.statCardGreen]}>
-            <View style={styles.statIconContainer}>
-              <GamepadIcon size={24} color="#4A9B8E" strokeWidth={2} />
-            </View>
-            <Text style={styles.statNumber}>168</Text>
-            <Text style={styles.statLabel}>TOTAL SESSIONS</Text>
-          </View>
-
-          <View style={[styles.statCard, styles.statCardPurple]}>
-            <View style={styles.statIconContainer}>
-              <Flame size={24} color="#8B5CF6" strokeWidth={2} />
-            </View>
-            <Text style={styles.statNumber}>119</Text>
-            <Text style={styles.statLabel}>TOURNAMENTS</Text>
-          </View>
-
-          <View style={[styles.statCard, styles.statCardBrown]}>
-            <View style={styles.statIconContainer}>
-              <Clock size={24} color="#A0704A" strokeWidth={2} />
-            </View>
-            <Text style={styles.statNumber}>163<Text style={styles.statUnit}>M</Text></Text>
-            <Text style={styles.statLabel}>PLAYTIME</Text>
-          </View>
-        </View>
-
-        {/* Share Results Button */}
-        <TouchableOpacity style={styles.shareButton} activeOpacity={0.8}>
-          <Text style={styles.shareButtonText}>Share Results</Text>
-          <ChevronRight size={24} color={COLORS.white} strokeWidth={3} />
-        </TouchableOpacity>
-
-        {/* Menu Items */}
-        <View style={styles.menuContainer}>
-          <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
-            <View style={styles.menuItemLeft}>
-              <View style={styles.menuIconContainer}>
-                <Text style={styles.menuIcon}>📋</Text>
+            
+            <Image 
+              source={{ uri: IMAGE_URL.PROFILE_FRAME }}
+              style={styles.profileFrame}
+              resizeMode="contain"
+            />
+            
+            {/* Light Blue Content Section */}
+            <Animated.View 
+              style={[
+                styles.profileContent,
+                {
+                  transform: [{ translateY: contentSlide }],
+                  opacity: frameOpacity,
+                }
+              ]}
+            >
+              {/* Left Side - Profile Image and Stats */}
+              <View style={styles.profileLeft}>
+                {/* Profile Image */}
+                <View style={styles.profileImageContainer}>
+                  <Image 
+                    source={{ uri: IMAGE_URL.PROFILE_IMG }}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                  />
+                  <TouchableOpacity style={styles.editIconButton}>
+                    <Text style={styles.editIconText}>✏️</Text>
+                  </TouchableOpacity>
+                </View>
+                
+                {/* Stats */}
+                <View style={styles.profileStats}>
+                  <Text style={styles.profileName}>FaultyGlee4</Text>
+                  
+                  <View style={styles.statRow}>
+                    <Text style={[styles.statIcon, { color: '#4FC3F7' }]}>✦</Text>
+                    <Text style={styles.statText}>Total Star: 21</Text>
+                  </View>
+                  
+                  <View style={styles.statRow}>
+                    <Text style={[styles.statIcon, { color: '#4FC3F7' }]}>✕</Text>
+                    <Text style={styles.statText}>PvP Games: 0</Text>
+                  </View>
+                  
+                  {/* <View style={styles.statRow}>
+                    <Text style={[styles.statIcon, { color: '#4FC3F7' }]}>🏆</Text>
+                    <Text style={styles.statText}>PvP Winrate: 0%</Text>
+                  </View> */}
+                </View>
               </View>
-              <Text style={styles.menuItemText}>Tournament History</Text>
-            </View>
-            <ChevronRight size={20} color={COLORS.primary} strokeWidth={2.5} />
-          </TouchableOpacity>
-
-          {/* <View style={styles.menuDivider} /> */}
-
-          {/* <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
-            <View style={styles.menuItemLeft}>
-              <View style={styles.menuIconContainer}>
-                <Text style={styles.menuIcon}>🔔</Text>
+              
+              {/* Right Side - VIP Badge */}
+              <View style={styles.profileRight}>
+                <Image 
+                  source={{ uri: 'https://res.cloudinary.com/dfhkitqpl/image/upload/v1770894048/Bubble%20Shooting%20Game/vip_badge.webp' }}
+                  style={styles.vipBadge}
+                  resizeMode="contain"
+                />
               </View>
-              <Text style={styles.menuItemText}>Notifications</Text>
-            </View>
-            <ChevronRight size={20} color={COLORS.primary} strokeWidth={2.5} />
-          </TouchableOpacity> */}
-
-          {/* <View style={styles.menuDivider} /> */}
-
-          {/* <TouchableOpacity style={styles.menuItem} activeOpacity={0.7}>
-            <View style={styles.menuItemLeft}>
-              <View style={styles.menuIconContainer}>
-                <Text style={styles.menuIcon}>🔍</Text>
-              </View>
-              <Text style={styles.menuItemText}>My Details</Text>
-            </View>
-            <ChevronRight size={20} color={COLORS.primary} strokeWidth={2.5} />
-          </TouchableOpacity> */}
+            </Animated.View>
+          </Animated.View>
         </View>
-      </ScrollView>
+      </View>
 
       {/* Settings Modal */}
       <SettingsModal
